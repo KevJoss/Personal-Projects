@@ -1,0 +1,4398 @@
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-1
+
+
+ 0000				STACK SEGMENT PARA STACK 
+ 0000  0040[				DB 64 DUP (' ') 
+	   20			
+			 ]	
+				
+ 0040				STACK ENDS 
+				 
+				 
+ 0000				DATA SEGMENT PARA 'DATA' 
+				 
+ 0000  01				FIRST_RUN DB 1                 	
+									
+									; Flag 
+				to determine the first execution 
+				 
+				;	General variables for window characteri
+				stics 
+ 0001  0140				WINDOW_WIDTH DW 140h		
+									
+									
+					; The width of window (320 px) 
+ 0003  00C8				WINDOW_HEIGHT DW 0C8h		
+									
+									
+					; The height of window (200 px) 
+ 0005  0006				WINDOW_BOUNDS DW 6		
+									
+									
+						; Anticipation range at the edg
+				es (6) 
+ 0007  0010				WINDOW_BOUND_TOP DW 16		
+									
+									
+					; Anticipation range at the top edge (1
+				6) 
+				 
+				;	Time variables for the game 
+ 0009  00				TIME_AUX DB 0			
+									
+									
+						; Checking variable for the pas
+				s of the time 
+ 000A  01				GAME_ACTIVE DB 1		
+									
+									
+						; Is the game active? (1 -> Yes
+				 and 0 -> No) 
+ 000B  00				MAIN_MENU DB 0			
+									
+									
+						; The index of main menu (0 -> 
+				main menu, 1 -> game) 
+					 
+				;	UI varaibles for the game 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-2
+
+
+ 000C  78 33 24				TEXT_PLAYER_LIFES DB 'x3','$'	
+									
+									; Text 
+				with the player lifes 
+ 000F  41 52 4B 41 4E 4F 49		TEXT_TITLE_GAME DB 'ARKANOID BY KEV','$
+				'					
+							; Text for the UI desig
+				n (Title of the game) 
+       44 20 42 59 20 4B 45	
+       56 24			
+ 001F  47 41 4D 45 52 20 4F		TEXT_GAME_OVER_TITLE DB 'GAMER OVER', '
+				$'					
+							; Game over Title 
+       56 45 52 24		
+ 002A  44 6F 6E 74 20 67 69		TEXT_GAME_OVER_MOTIVATION DB 'Dont give
+				 up :)', '$'				
+						; Extra text for game over titl
+				e 
+       76 65 20 75 70 20 3A	
+       29 24			
+ 003A  50 72 65 73 73 20 52		TEXT_GAME_OVER_PLAY_AGAIN DB 'Press R t
+				o play again', '$'			
+					; Text for restar game 
+       20 74 6F 20 70 6C 61	
+       79 20 61 67 61 69 6E	
+       24			
+ 0050  50 72 65 73 73 20 4D		TEXT_GAME_OVER_BACK_MENU DB 'Press M to
+				 exit main menu', '$'			; Text 
+				to exit main menu 
+       20 74 6F 20 65 78 69	
+       74 20 6D 61 69 6E 20	
+       6D 65 6E 75 24		
+ 006A  41 52 4B 41 4E 4F 49		TEXT_MAIN_MENU_TITLE_GAME DB 'ARKANOID'
+				, '$'					
+						; Text for main menu (Title of 
+				game) 
+       44 24			
+ 0073  53 74 61 72 74 20 67		TEXT_MAIN_MENU_TITLE_START DB 'Start ga
+				me - S KEY', '$'			
+						; Text for main menu (Start gam
+				e) 
+       61 6D 65 20 2D 20 53	
+       20 4B 45 59 24		
+ 0086  03				GAME_LIFES DB 3			
+									
+									
+						; Total of lifes of the game  
+ 0087  0020				PADDLE_UI_WIDTH DW 020h 	
+									
+									
+					; Decorative paddle (width) for UI life
+				s (32) 
+ 0089  0007				PADDLE_UI_HEIGH DW 07h		
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-3
+
+
+									
+					; Decorative paddle (heigh) for UI life
+				s (7) 
+ 008B  0008				PADDLE_UI_X DW 08h		
+									
+									
+						; X coord on the window for dec
+				orative paddle (8) 
+ 008D  0008				Y_PADDLE_UI DW 08h		
+									
+									
+						; Y coordinate on the window fo
+				r decorative paddle (8)  
+					 
+				;	Ball variables for the game 
+ 008F  00A0				BALL_ORIGINAL_X DW 0A0h		
+									
+									
+					; X initial	coordinate for ball gam
+				e (160)	 
+ 0091  0096				BALL_ORIGINAL_Y DW 096h		
+									
+									
+					; Y initial coordinate for ball game (1
+				50) 
+ 0093  00A0			    BALL_X DW 0A0H			
+									
+									
+						; X coordinate for ball game  
+ 0095  0096				BALL_Y DW 096H			
+									
+									
+						; Y coordinate for ball game 
+ 0097  00A0				OLD_BALL_X DW 0A0h             	
+									
+									; Previ
+				ous coordinate of the ball on X 
+ 0099  0096				OLD_BALL_Y DW 096h             	
+									
+									; Previ
+				ous coordinate of the ball on Y 
+ 009B  0006				BALL_SIZE DW 06h		
+									
+									
+						; Size of the ball (6x6 px) 
+ 009D  0009				BALL_VELOCITY_X DW 09h		
+									
+									
+					; X (horizontal velocity) 
+ 009F  0007				BALL_VELOCITY_Y DW 07h		
+									
+									
+					; Y (vertical velocity) 
+					 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-4
+
+
+				;	Paddle variables for the game 
+ 00A1  008C				PADDLE_X DW 08Ch		
+									
+									
+						; X coordinate of the paddle  
+ 00A3  008C				OLD_PADDLE_X DW 08Ch           	
+									
+									; Previ
+				ous coordinate of the paddle on X 
+ 00A5  00B7				PADDLE_Y DW 0B7h		
+									
+									
+						; Y coordinate of the paddle (1
+				83) 
+ 00A7  008C				PADDLE_ORIGINAL_X DW 08Ch	
+									
+									
+					; X initial cooordinate of the paddle (
+				140) 
+ 00A9  0040				PADDLE_WIDTH DW 40h		
+									
+									
+						; Width of the paddle  
+ 00AB  0007				PADDLE_HEIGHT DW 07h		
+									
+									
+					; Height of the paddle 
+ 00AD  0019				PADDLE_VELOCITY DW 19h		
+									
+									
+					; Paddle movement speed 
+					 
+				 
+				;   Block variables for each row 
+				 
+				; 	First row of blocks 
+ 00AF  000A			    NUM_BLOCKS DW 10                           
+				 					
+						; Total of blocks in first row:
+				 10 blocks 
+ 00B1  0000 0020 0040 0060	    BLOCKS_X DW 00h, 20h, 40h, 60h, 80h, 0A0h, 
+				0C0h, 0E0h, 100h, 120h		; X coordinate 
+				for all rows of blocks (0, 32, 64, 96, 128, 16
+       0080 00A0 00C0 00E0	
+       0100 0120		
+ 00C5  001E			    BLOCK_Y DW 1Eh                           
+									
+							; Y coordinate for firs
+				t row (30) 
+ 00C7  04			    BLOCK_COLOR DB 04h                         
+				 					
+						; Color of first row (RED) 
+ 00C8  0019			    BLOCK_WIDTH DW 19h                      
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-5
+
+
+							; Width blocks  
+ 00CA  000F			    BLOCK_HEIGHT DW 0Fh                       
+									
+							; Heigh blocks 
+ 00CC  000A[			    BLOCKS_ACTIVE DB 10 DUP(1)                 
+				 					
+						; State array of first row bloc
+				ks 
+	   01			
+			 ]	
+				
+				     
+				; 	Second row of blocks 
+ 00D6  000A			    NUM_BLOCKS2 DW 10                          
+				 					
+						; Total of blocks in second row
+				: 10 blocks 
+ 00D8  0000 0020 0040 0060	    BLOCKS_X2   DW 00h, 20h, 40h, 60h, 80h, 0A0
+				h, 0C0h, 0E0h, 100h, 120h   
+       0080 00A0 00C0 00E0	
+       0100 0120		
+ 00EC  0032			    BLOCK_Y2    DW 32h                         
+				 					
+						; Y coordinate for second row (
+				50) 
+ 00EE  09			    BLOCK_COLOR2 DB 09h                        
+				 					
+						; Color of second row (LIGHT BL
+				UE) 
+ 00EF  000A[			    BLOCKS_ACTIVE2 DB 10 DUP(1)                
+				 					
+						; State array of second row blo
+				cks 
+	   01			
+			 ]	
+				
+					 
+				; 	Third row of blocks 
+ 00F9  000A				NUM_BLOCKS3 DW 10                      
+				     					
+						; Total of blocks in third row:
+				 10 blocks 
+ 00FB  0000 0020 0040 0060		BLOCKS_X3   DW 00h, 20h, 40h, 60h, 80h,
+				 0A0h, 0C0h, 0E0h, 100h, 120h  
+       0080 00A0 00C0 00E0	
+       0100 0120		
+ 010F  0046				BLOCK_Y3    DW 46h                     
+				    					
+						 	; Y coordinate for thir
+				d row (70) 
+ 0111  0E				BLOCK_COLOR3 DB 0Eh                    
+				     					
+						; Color of third row (YELLOW) 
+ 0112  000A[				BLOCKS_ACTIVE3 DB 10 DUP(1)            
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-6
+
+
+				     					
+						; State array of third row bloc
+				ks 
+	   01			
+			 ]	
+				
+				 
+				; 	Fourth row of blocks 
+ 011C  000A				NUM_BLOCKS4 DW 10                      
+				     					
+						; Total of blocks in fourth row
+				: 10 blocks 
+ 011E  0000 0020 0040 0060		BLOCKS_X4   DW 00h, 20h, 40h, 60h, 80h,
+				 0A0h, 0C0h, 0E0h, 100h, 120h  	 
+       0080 00A0 00C0 00E0	
+       0100 0120		
+ 0132  005A				BLOCK_Y4    DW 5Ah                     
+				     					
+						; Y coordinate for fourth row (
+				90) 
+ 0134  0D				BLOCK_COLOR4 DB 0Dh                    
+				     					
+						; Color of fourth row (MAGENTA)
+				 
+ 0135  000A[				BLOCKS_ACTIVE4 DB 10 DUP(1)            
+				     					
+						; State array of fourth row blo
+				cks 
+	   01			
+			 ]	
+				
+					 
+				;	Variables for Power-ups in game 
+				 
+				; 	Power-up (Paddle expansion) variables 
+ 013F  00				POWERUP_PADDLE_ACTIVE DB 0        
+									
+									; 0=Not
+				 active, 1=Active 
+ 0140  0000				POWERUP_PADDLE_TIMER DW 0        
+									
+									; Durat
+				ion of power up 
+ 0142  0040				PADDLE_NORMAL_WIDTH DW 40h       
+									
+									; Savin
+				g the original width of paddle 
+					 
+				;	Variables for sound 
+ 0144  0005				SOUND_DURATION DW 0005h 	
+									
+									
+					; Sound duration  
+ 0146  0900				BEEP_FREQ_HIGH DW 0900h 	
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-7
+
+
+									
+									
+					; High frequency (for collisions with p
+				addle) 
+ 0148  0300				BEEP_FREQ_LOW DW 0300h 		
+									
+									
+					; Low frequency (for collisions with bl
+				ocks) 
+ 014A  0600				BEEP_FREQ_MED DW 0600h 		
+									
+									
+					; Medium frequency (for collisions with
+				 walls) 
+					 
+ 014C				DATA ENDS 
+				 
+ 0000				CODE SEGMENT PARA 'CODE' 
+					 
+ 0000					MAIN PROC FAR 
+					ASSUME CS:CODE,DS:DATA,SS:STACK	
+									
+									; Ident
+				ify each segment of 8086 architecture 
+ 0000  1E				PUSH DS          		
+									
+									
+						; Save actua DS value in stack 
+ 0001  2B C0				SUB AX, AX       		
+									
+									
+						; Clean AX register 
+ 0003  50				PUSH AX          		
+									
+									
+						; Put 0 into stack (using as a 
+				initializer) 
+ 0004  B8 ---- R			MOV AX, DATA     		
+									
+									
+						; Load data segment into AX reg
+				ister 
+ 0007  8E D8				MOV DS, AX       		
+									
+									
+						; DS points to data segment 
+ 0009  58				POP AX           		
+									
+									
+						; Retrieves the highest value o
+				f the stack (clears the stack) 
+ 000A  58				POP AX           		
+									
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-8
+
+
+						; Clears another value from the
+				 stack 
+						 
+ 000B						CHECK_TIME:		
+									
+									
+							; Label for checking th
+				e pass of the time  
+							 
+ 000B  80 3E 000A R 00					CMP GAME_ACTIVE,00h
+									
+									
+						; Checking if the game is over 
+				to display game over menu 
+ 0010  74 62						JE SHOW_GAME_OVER_MENU
+									
+									
+					; If is equal to zero, jump to SHOW_GAM
+				E_OVER_MENU 
+							 
+ 0012  80 3E 000B R 00					CMP MAIN_MENU,00h
+									
+									
+						; Checking if the player is in 
+				the main menu 
+ 0017  74 60						JE SHOW_MAIN_MENU_GAME
+									
+									
+					; If is equal to zero, jump to SHOW_MAI
+				N_MENU_GAME 
+						 
+ 0019  B4 2C						MOV AH, 2Ch	
+									
+									
+							; DOS routine to obtain
+				 System Time 
+ 001B  CD 21						INT 21h		
+									
+									
+							; Interruption of previ
+				ous routine 
+							 
+ 001D  3A 16 0009 R					CMP DL, TIME_AUX
+									
+									
+						; Checks if there was a time ju
+				mp for drawing 
+ 0021  74 E8						JE CHECK_TIME	
+									
+									
+						; If equal (no time change), sk
+				ip drawing cycle 
+							 
+ 0023  88 16 0009 R					MOV TIME_AUX, DL
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-9
+
+
+									
+									
+						; Store current centiseconds fo
+				r next comparison 
+							 
+				; 			First execution: Drawin
+				g blocks 
+ 0027  80 3E 0000 R 01					CMP BYTE PTR [FIRST_RUN
+				], 1					
+									; Put 1
+				 value into FIRST_RUN with a pointer	
+								 
+ 002C  75 1A						JNE NORMAL_CYCLE
+									
+									
+						; Check if is the first executi
+				on 
+							 
+				; 			Only the entire screen 
+				is cleaned the first time 
+ 002E  E8 086E R					CALL CLEAR_SCREEN
+									
+									
+						; Clear screen before to drawin
+				g in window 
+ 0031  C6 06 0000 R 00					MOV BYTE PTR [FIRST_RUN
+				], 0					
+									; The e
+				xecution status is changed to 0 
+							 
+				; 			Draw all blocks and UI 
+				for the first time 
+ 0036  E8 04EB R					CALL DRAW_BLOCKS 
+ 0039  E8 0535 R					CALL DRAW_BLOCKS2 
+ 003C  E8 0580 R					CALL DRAW_BLOCKS3 
+ 003F  E8 05C9 R					CALL DRAW_BLOCKS4 
+ 0042  E8 06FB R					CALL DRAW_PADDLE_UI
+									
+									
+							 
+ 0045  EB 22 90						JMP DRAW_MOVING_OBJECTS
+									
+									
+					; Jump to draw and movement of ball, an
+				d paddle 
+							 
+ 0048						NORMAL_CYCLE: 
+						 
+				; 			Save ball position 
+ 0048  A1 0093 R					MOV AX, BALL_X 
+ 004B  A3 0097 R					MOV OLD_BALL_X, AX
+									
+									
+						; Put current X coordinate into
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-10
+
+
+				 OLD_BALL_X 
+ 004E  A1 0095 R					MOV AX, BALL_Y 
+ 0051  A3 0099 R					MOV OLD_BALL_Y, AX
+									
+									
+						; Put current Y cooordinate int
+				o OLD_BALL_Y 
+							 
+				; 			Save paddle position 
+ 0054  A1 00A1 R					MOV AX, PADDLE_X 
+ 0057  A3 00A3 R					MOV OLD_PADDLE_X, AX
+									
+									
+					; Put current X cooordinate into OLD_PA
+				DDLE_X 
+				 
+				; 			Delete past objects 
+ 005A  E8 0641 R					CALL CLEAR_BALL_AREA   
+				     					
+								; Clears only t
+				he previous ball area 
+ 005D  E8 06A3 R					CALL CLEAR_PADDLE_AREA 
+				     					
+								; Deletes only 
+				the previous paddle area 
+							 
+				; 			Moving objects 
+ 0060  E8 0301 R					CALL MOVE_BALL         
+				     					
+								; Moving ball a
+				nd detect collisions 
+ 0063  E8 0461 R					CALL MOVE_PADDLE       
+				     					
+								; Moving paddle
+				 
+							 
+ 0066  E8 0850 R					CALL CHECK_POWERUP_TIME
+				R     					
+								; Check the pow
+				er-up timer  
+				 
+				; 		Draw moving objects	
+					 
+ 0069						DRAW_MOVING_OBJECTS: 
+ 0069  E8 0612 R					CALL DRAW_BALL         
+				     					
+								; Draw new ball
+				 position 
+ 006C  E8 0674 R					CALL DRAW_PADDLE       
+				     					
+								; Draw new padd
+				le position 
+ 006F  E8 06D6 R					CALL DRAW_UI	
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-11
+
+
+									
+						; Draw the UI with the points 
+							 
+ 0072  EB 97						JMP CHECK_TIME	
+									
+									
+						; Jump to a new time step 
+							 
+				;		Show game over screen 
+ 0074						SHOW_GAME_OVER_MENU: 
+ 0074  E8 0735 R					CALL DRAW_GAME_OVER_MEN
+				U					
+									; Calli
+				ng the drawing menu game over 
+ 0077  EB 92						JMP CHECK_TIME	
+									
+									
+						; Jump to a new time step 
+							 
+				;		Show main menu screen 
+ 0079						SHOW_MAIN_MENU_GAME: 
+ 0079  E8 07F7 R					CALL MAIN_MENU_UI
+									
+									
+						; Calling the drawing main menu
+				 screen 
+ 007C  EB 8D						JMP CHECK_TIME	
+									
+									
+						; Jump to a new time step 
+							 
+ 007E  CB					RET 
+ 007F					MAIN ENDP 
+					 
+				;	Procedure to verify the collision with 
+				the blocks	 
+					 
+ 007F					CHECK_BLOCK_COLLISION PROC NEAR 
+ 007F  51				PUSH CX                                
+									
+								; Save CX regis
+				ter on stack 
+ 0080  56			    PUSH SI                                
+									
+								; Save SI point
+				er on stack 
+ 0081  57			    PUSH DI                                
+									
+								; Save DI point
+				er on stack 
+				     
+				; 	Initialize counters and pointers 
+ 0082  8B 0E 00AF R		    MOV CX, NUM_BLOCKS                     
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-12
+
+
+								; Set counter t
+				o total number of blocks 
+ 0086  BE 00B1 R		    MOV SI, OFFSET BLOCKS_X                
+									
+								; SI points to 
+				X-positions array 
+ 0089  BF 00CC R		    MOV DI, OFFSET BLOCKS_ACTIVE           
+									
+								; DI points to 
+				block active status array 
+				     
+ 008C  B8 0000			    MOV AX, 0                              
+									
+								; Default retur
+				n value = 0 (no collision) 
+				     
+				; 	Check each block in the array 
+ 008F				    CHECK_NEXT_BLOCK: 
+				     
+				; 	Check if current block is active 
+ 008F  8A 05			    MOV AL, [DI]                           
+									
+								; Get active st
+				atus from array 
+ 0091  3C 00			    CMP AL, 0                             
+									
+								; Compare with 
+				0 (destroyed) 
+ 0093  74 75			    JE BLOCK_NOT_ACTIVE                    
+									
+								; Skip if block
+				 is already destroyed 
+				     
+				     
+				; 	Collision detection using AABB method 
+				; 	Checks if rectangles overlap: ball and 
+				block 
+				     
+				; 	Check if right edge of ball > left edge
+				 of block 
+ 0095  A1 0093 R		    MOV AX, BALL_X 
+ 0098  03 06 009B R		    ADD AX, BALL_SIZE 
+ 009C  3B 04			    CMP AX, [SI] 
+ 009E  7E 6A			    JNG BLOCK_NOT_ACTIVE     
+				     
+				; 	Check if left edge of ball < right edge
+				 of block 
+ 00A0  8B 1C			    MOV BX, [SI]            
+ 00A2  03 1E 00C8 R		    ADD BX, BLOCK_WIDTH 
+ 00A6  39 1E 0093 R		    CMP BALL_X, BX 
+ 00AA  7D 5E			    JNL BLOCK_NOT_ACTIVE     
+				 
+				; 	Check if bottom edge of ball > top edge
+				 of block 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-13
+
+
+ 00AC  A1 0095 R		    MOV AX, BALL_Y 
+ 00AF  03 06 009B R		    ADD AX, BALL_SIZE 
+ 00B3  3B 06 00C5 R		    CMP AX, BLOCK_Y 
+ 00B7  7E 51			    JNG BLOCK_NOT_ACTIVE     
+				 
+				; 	Check if top edge of ball < bottom edge
+				 of block 
+ 00B9  8B 1E 00C5 R		    MOV BX, BLOCK_Y 
+ 00BD  03 1E 00CA R		    ADD BX, BLOCK_HEIGHT 
+ 00C1  39 1E 0095 R		    CMP BALL_Y, BX 
+ 00C5  7D 43			    JNL BLOCK_NOT_ACTIVE     
+				     
+				; 	Collision detected with this block 
+ 00C7  C6 05 00			    MOV BYTE PTR [DI], 0                   
+									
+								; Mark block as
+				 destroyed 
+				 
+ 00CA  50				PUSH AX                               
+						 			
+								; Save AX 
+ 00CB  A1 0148 R			MOV AX, BEEP_FREQ_LOW                  
+									
+								; Load low freq
+				uency 
+ 00CE  E8 02E2 R			CALL PLAY_SOUND                        
+									
+								; Play sound 
+ 00D1  58				POP AX                                 
+									
+								; Restore AX 
+				     
+				; 	Visually clear this block (draw in back
+				ground color) 
+ 00D2  50			    PUSH AX 
+ 00D3  53			    PUSH BX 
+ 00D4  51			    PUSH CX 
+ 00D5  52			    PUSH DX 
+				     
+ 00D6  8B 0C			    MOV CX, [SI]                           
+									
+								; Block's X pos
+				ition 
+ 00D8  8B 16 00C5 R		    MOV DX, BLOCK_Y                        
+									
+								; Block's Y pos
+				ition 
+				     
+ 00DC				    CLEAR_BLOCK1_VERTICAL: 
+ 00DC  51			        PUSH CX                            
+									
+								; Save initial 
+				X 
+				     
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-14
+
+
+ 00DD				    CLEAR_BLOCK1_HORIZONTAL: 
+ 00DD  B4 0C			        MOV AH, 0Ch                        
+									
+								; Function: dra
+				w pixel 
+ 00DF  B0 00			        MOV AL, 00h                        
+									
+								; Color: black 
+				(background) 
+ 00E1  CD 10			        INT 10h				
+									
+									
+						; Interruption to draw pixel in
+				 window 
+				     
+ 00E3  41			        INC CX				
+									
+									
+						; Increment X position  
+ 00E4  8B C1			        MOV AX, CX 
+ 00E6  2B 04			        SUB AX, [SI] 
+ 00E8  3B 06 00C8 R		        CMP AX, BLOCK_WIDTH 
+ 00EC  7C EF			        JL CLEAR_BLOCK1_HORIZONTAL         
+									
+								; Continue unti
+				l full width cleared 
+				     
+ 00EE  59			        POP CX                             
+									
+								; Restore initi
+				al X 
+ 00EF  42			        INC DX                             
+									
+								; Next row 
+ 00F0  8B C2			        MOV AX, DX 
+ 00F2  2B 06 00C5 R		        SUB AX, BLOCK_Y 
+ 00F6  3B 06 00CA R		        CMP AX, BLOCK_HEIGHT 
+ 00FA  7C E0			        JL CLEAR_BLOCK1_VERTICAL           
+									
+								; Continue unti
+				l full height cleared 
+				     
+ 00FC  5A			    POP DX 
+ 00FD  59			    POP CX 
+ 00FE  5B			    POP BX 
+ 00FF  58			    POP AX 
+				     
+ 0100  F7 1E 009F R		    NEG BALL_VELOCITY_Y                    
+									
+								; Reverse ball'
+				s vertical direction 
+				     
+ 0104  B8 0001			    MOV AX, 1                              
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-15
+
+
+								; Set return va
+				lue = 1 (collision occurred) 
+				     
+ 0107  EB 0B 90			    JMP EXIT_BLOCK_CHECK                   
+									
+								; Exit loop aft
+				er handling collision 
+				 
+				;   Move to next block 
+ 010A				    BLOCK_NOT_ACTIVE: 
+ 010A  83 C6 02			        ADD SI, 2                          
+									
+								; Move to next 
+				X position (2 bytes per word) 
+ 010D  47			        INC DI                             
+									
+								; Move to next 
+				active status byte 
+ 010E  49			        DEC CX                             
+									
+								; Decrement cou
+				nter 
+ 010F  74 03			        JZ EXIT_BLOCK_LOOP                 
+									
+								; If CX = 0, ex
+				it the loop 
+ 0111  E9 008F R		        JMP CHECK_NEXT_BLOCK               
+									
+								; Unconditional
+				 jump back to start of loop 
+						 
+ 0114				    EXIT_BLOCK_LOOP: 
+				     
+				; 	Clean up and return 
+ 0114				    EXIT_BLOCK_CHECK: 
+ 0114  5F			        POP DI                             
+									
+								; Restore regis
+				ters from stack 
+ 0115  5E			        POP SI 
+ 0116  59			        POP CX 
+				     
+ 0117  C3			        RET 
+ 0118					CHECK_BLOCK_COLLISION ENDP 
+					 
+				;	Second Row Collision Procedure 
+					 
+ 0118					CHECK_BLOCK_COLLISION2 PROC NEAR 
+					 
+ 0118  51					PUSH CX                        
+				    					
+								; Save CX regis
+				ter on stack 
+ 0119  56					PUSH SI                        
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-16
+
+
+				    					
+								; Save SI point
+				er on stack 
+ 011A  57					PUSH DI                        
+				    					
+								; Save DI point
+				er on stack 
+						 
+				; 		Initialize counter and pointers
+				 
+ 011B  8B 0E 00D6 R				MOV CX, NUM_BLOCKS2            
+				    					
+								; Save a counte
+				r of number total of blocks in CX 
+ 011F  BE 00D8 R				MOV SI, OFFSET BLOCKS_X2       
+				    					
+								; Pointer to X 
+				coordinates for blocks into second row  
+ 0122  BF 00EF R				MOV DI, OFFSET BLOCKS_ACTIVE2  
+				    					
+								; Pointer to st
+				ates for blocks into second row  
+						 
+ 0125  B8 0000					MOV AX, 0                      
+				    					
+								; Default retur
+				n value = 0 (no colission) 
+						 
+				; 	Check each block in the array BLOCKS_X2
+				 
+ 0128					CHECK_NEXT_BLOCK2: 
+				; 		Check if the block is active  
+ 0128  8A 05					MOV AL, [DI]                   
+				    					
+								; Save X coordi
+				nate into AL 
+ 012A  3C 00					CMP AL, 0                      
+				    					
+								; Compara si va
+				lor de activacion con 0 
+ 012C  75 03					JNE	CONTINUE_FLOW2         
+				      					
+								; Skip if block
+				 is already destroyed 
+						 
+ 012E						JUMP_BLOCK_NOT_ACTIVE2: 
+ 012E  E9 01B7 R					JMP BLOCK_NOT_ACTIVE2 
+							 
+ 0131					CONTINUE_FLOW2: 
+				; 		Checking collision in coordinat
+				es 
+				 
+				; 		Check if right edge of ball > l
+				eft edge of block 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-17
+
+
+ 0131  A1 0093 R		        MOV AX, BALL_X 
+ 0134  03 06 009B R		        ADD AX, BALL_SIZE 
+ 0138  3B 04			        CMP AX, [SI] 
+ 013A  7E 7B			        JNG BLOCK_NOT_ACTIVE2     
+				         
+				; 		Check if left edge of ball < ri
+				ght edge of block 
+ 013C  8B 1C			        MOV BX, [SI]            
+ 013E  03 1E 00C8 R		        ADD BX, BLOCK_WIDTH 
+ 0142  39 1E 0093 R		        CMP BALL_X, BX 
+ 0146  7D 6F			        JNL BLOCK_NOT_ACTIVE2     
+				 
+				; 		Check if bottom edge of ball > 
+				top edge of block 
+ 0148  A1 0095 R		        MOV AX, BALL_Y 
+ 014B  03 06 009B R		        ADD AX, BALL_SIZE 
+ 014F  3B 06 00EC R		        CMP AX, BLOCK_Y2               	
+									
+								; Use Y positio
+				n of second row 
+ 0153  7E 62			        JNG BLOCK_NOT_ACTIVE2     
+				 
+				; 		Check if top edge of ball < bot
+				tom edge of block 
+ 0155  8B 1E 00EC R		        MOV BX, BLOCK_Y2 
+ 0159  03 1E 00CA R		        ADD BX, BLOCK_HEIGHT 
+ 015D  39 1E 0095 R		        CMP BALL_Y, BX 
+ 0161  7D 54			        JNL BLOCK_NOT_ACTIVE2        
+						 
+				; 	Collision detected with this block 
+ 0163  C6 05 00				MOV BYTE PTR [DI], 0               
+									
+									; Mark 
+				block as destroyed 
+					 
+ 0166  50				PUSH AX                               
+						 			
+								; Save AX 
+ 0167  A1 0148 R			MOV AX, BEEP_FREQ_LOW                  
+									
+								; Load low freq
+				uency 
+ 016A  E8 02E2 R			CALL PLAY_SOUND                        
+									
+								; Play sound 
+ 016D  58				POP AX                                 
+									
+								; Restore AX 
+					 
+						 
+				; 	Visually clear this block (draw in back
+				ground color) 
+ 016E  50				PUSH AX 
+ 016F  53				PUSH BX 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-18
+
+
+ 0170  51				PUSH CX 
+ 0171  52				PUSH DX 
+						 
+ 0172  8B 0C				MOV CX, [SI]                       
+									
+									; Block
+				's X position 
+ 0174  8B 16 00EC R			MOV DX, BLOCK_Y2                   
+									
+									; Block
+				's Y position (fila 2) 
+						 
+ 0178					CLEAR_BLOCK2_VERTICAL: 
+ 0178  51					PUSH CX                        
+									
+									; Save 
+				initial X 
+						 
+ 0179					CLEAR_BLOCK2_HORIZONTAL: 
+ 0179  B4 0C					MOV AH, 0Ch                    
+									
+									; Funct
+				ion: Draw pixel in window 
+ 017B  B0 00					MOV AL, 00h                    
+									
+									; Black
+				 color 
+ 017D  CD 10					INT 10h 
+						 
+ 017F  41					INC CX 
+ 0180  8B C1					MOV AX, CX 
+ 0182  2B 04					SUB AX, [SI] 
+ 0184  3B 06 00C8 R				CMP AX, BLOCK_WIDTH 
+ 0188  7C EF					JL CLEAR_BLOCK2_HORIZONTAL     
+									
+									; Conti
+				nue until full width cleared 
+						 
+ 018A  59					POP CX                         
+									
+									; Resto
+				re initial X 
+ 018B  42					INC DX                         
+									
+									; Next 
+				row 
+ 018C  8B C2					MOV AX, DX 
+ 018E  2B 06 00EC R				SUB AX, BLOCK_Y2               
+									
+									; Use Y
+				 coordinate for second row 
+ 0192  3B 06 00CA R				CMP AX, BLOCK_HEIGHT 
+ 0196  7C E0					JL CLEAR_BLOCK2_VERTICAL       
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-19
+
+
+									; Conti
+				nue until full heigh cleared 
+						 
+ 0198  5A				POP DX 
+ 0199  59				POP CX 
+ 019A  5B				POP BX 
+ 019B  58				POP AX 
+						 
+ 019C  F7 1E 009F R			NEG BALL_VELOCITY_Y                
+									
+									; Rever
+				se ball's vertical direction 
+				     
+ 01A0  50			    PUSH AX 
+ 01A1  8B C6			    MOV AX, SI                         	
+									
+								; Calculate blo
+				ck index 
+ 01A3  2D 00D8 R		    SUB AX, OFFSET BLOCKS_X2           	
+									
+								; Get offset fr
+				om start of array 
+ 01A6  D1 E8			    SHR AX, 1                          	
+									
+								; Divide by 2 (
+				for words) 
+ 01A8  3D 0004			    CMP AX, 4                          	
+									
+								; Check if 5th 
+				block (index 4) 
+ 01AB  75 03			    JNE SKIP_EXPAND_PADDLE             	
+									
+								; If not, skip 
+				power-up 
+				 
+				; 	Activate paddle expansion power-up 
+ 01AD  E8 0832 R		    CALL ACTIVATE_PADDLE_POWERUP 
+				 
+ 01B0				    SKIP_EXPAND_PADDLE: 
+ 01B0  58			    POP AX 
+				     
+				     
+ 01B1  B8 0001			    MOV AX, 1                          	
+									
+								; Set return va
+				lue = 1 (collision detected) 
+				     
+ 01B4  EB 0E 90			    JMP EXIT_BLOCK_CHECK2              	
+									
+								; Exit after ha
+				ndling collision 
+				 
+				; 	Move to next block 
+ 01B7				    BLOCK_NOT_ACTIVE2: 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-20
+
+
+ 01B7  83 C6 02			        ADD SI, 2                      	
+									
+								; Move to next 
+				X position (2 bytes) 
+ 01BA  47			        INC DI                         	
+									
+								; Move to next 
+				active status 
+ 01BB  49			        DEC CX                         	
+									
+								; Decrement cou
+				nter 
+ 01BC  83 F9 00			        CMP CX, 0                      	
+									
+								; Check if done
+				 
+ 01BF  74 03			        JE EXIT_BLOCK_CHECK2           	
+									
+								; Exit if all b
+				locks checked 
+ 01C1  E9 0128 R		        JMP CHECK_NEXT_BLOCK2          	
+									
+								; Continue with
+				 next block 
+				         
+				; 	Clean up and return 
+ 01C4				    EXIT_BLOCK_CHECK2: 
+ 01C4  5F			        POP DI                         	
+									
+								; Restore regis
+				ters 
+ 01C5  5E			        POP SI 
+ 01C6  59			        POP CX 
+				         
+ 01C7  C3			        RET 
+ 01C8					CHECK_BLOCK_COLLISION2 ENDP 
+					 
+				;	Third Row Collision Procedure 
+				 
+ 01C8					CHECK_BLOCK_COLLISION3 PROC NEAR 
+ 01C8  51				PUSH CX                            
+									
+									; Save 
+				CX register to stack 
+ 01C9  56			    PUSH SI                            	
+									
+								; Save SI point
+				er to stack 
+ 01CA  57			    PUSH DI                            	
+									
+								; Save DI point
+				er to stack 
+				     
+				; 	Initialize counter and pointers 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-21
+
+
+ 01CB  8B 0E 00F9 R		    MOV CX, NUM_BLOCKS3                	
+									
+								; Load block co
+				unt for row 3 
+ 01CF  BE 00FB R		    MOV SI, OFFSET BLOCKS_X3           	
+									
+								; SI points to 
+				X-positions of row 3 blocks 
+ 01D2  BF 0112 R		    MOV DI, OFFSET BLOCKS_ACTIVE3      	
+									
+								; DI points to 
+				active status of row 3 blocks 
+				     
+ 01D5  B8 0000			    MOV AX, 0                          	
+									
+								; Default retur
+				n: 0 (no collision) 
+				     
+				; 	Check each block in row 3 
+ 01D8				    CHECK_NEXT_BLOCK3: 
+					 
+				; 		Check if block is active 
+ 01D8  8A 05			        MOV AL, [DI]                   	
+									
+								; Get block sta
+				tus 
+ 01DA  3C 00			        CMP AL, 0                      	
+									
+								; Check if dest
+				royed (0) 
+ 01DC  74 6D			        JE BLOCK_NOT_ACTIVE3           	
+									
+								; Skip if alrea
+				dy destroyed 
+				         
+				; 		Collision detection (AABB metho
+				d) 
+				 
+				; 		Check if ball's right edge > bl
+				ock's left edge 
+ 01DE  A1 0093 R		        MOV AX, BALL_X 
+ 01E1  03 06 009B R		        ADD AX, BALL_SIZE 
+ 01E5  3B 04			        CMP AX, [SI] 
+ 01E7  7E 62			        JNG BLOCK_NOT_ACTIVE3     
+				         
+				; 		Check if ball's left edge < blo
+				ck's right edge 
+ 01E9  8B 1C			        MOV BX, [SI]            
+ 01EB  03 1E 00C8 R		        ADD BX, BLOCK_WIDTH 
+ 01EF  39 1E 0093 R		        CMP BALL_X, BX 
+ 01F3  7D 56			        JNL BLOCK_NOT_ACTIVE3     
+				 
+				; 		Check if ball's bottom edge > b
+				lock's top edge 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-22
+
+
+ 01F5  A1 0095 R		        MOV AX, BALL_Y 
+ 01F8  03 06 009B R		        ADD AX, BALL_SIZE 
+ 01FC  3B 06 010F R		        CMP AX, BLOCK_Y3 
+ 0200  7E 49			        JNG BLOCK_NOT_ACTIVE3     
+				 
+				; 		Check if ball's top edge < bloc
+				k's bottom edge 
+ 0202  8B 1E 010F R		        MOV BX, BLOCK_Y3 
+ 0206  03 1E 00CA R		        ADD BX, BLOCK_HEIGHT 
+ 020A  39 1E 0095 R		        CMP BALL_Y, BX 
+ 020E  7D 3B			        JNL BLOCK_NOT_ACTIVE3     
+				         
+				; 	Collision confirmed with this block 
+ 0210  C6 05 00			    MOV BYTE PTR [DI], 0               	
+									
+								; Mark block as
+				 destroyed 
+				         
+				 
+ 0213  50			    PUSH AX 
+ 0214  53			    PUSH BX 
+ 0215  51			    PUSH CX 
+ 0216  52			    PUSH DX 
+				         
+ 0217  8B 0C			    MOV CX, [SI]                       	
+									
+								; Block's X pos
+				ition 
+ 0219  8B 16 010F R		    MOV DX, BLOCK_Y3                   	
+									
+								; Block's Y pos
+				ition (row 3) 
+				         
+ 021D				    CLEAR_BLOCK3_VERTICAL: 
+ 021D  51			        PUSH CX                        	
+									
+								; Save X starti
+				ng position 
+				         
+ 021E				    CLEAR_BLOCK3_HORIZONTAL: 
+ 021E  B4 0C			        MOV AH, 0Ch                    	
+									
+								; Function: dra
+				w pixel 
+ 0220  B0 00			        MOV AL, 00h                   	
+									
+								; Color: black 
+ 0222  CD 10			        INT 10h                        	
+									
+								; Draw black pi
+				xel 
+				         
+ 0224  41			        INC CX                         	
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-23
+
+
+								; Next X positi
+				on 
+ 0225  8B C1			        MOV AX, CX 
+ 0227  2B 04			        SUB AX, [SI] 
+ 0229  3B 06 00C8 R		        CMP AX, BLOCK_WIDTH 
+ 022D  7C EF			        JL CLEAR_BLOCK3_HORIZONTAL     	
+									
+								; Continue unti
+				l block width cleared 
+				         
+ 022F  59			        POP CX                         	
+									
+								; Restore X to 
+				left edge 
+ 0230  42			        INC DX                         	
+									
+								; Next Y row 
+ 0231  8B C2			        MOV AX, DX 
+ 0233  2B 06 010F R		        SUB AX, BLOCK_Y3               	
+									
+								; Calculate Y o
+				ffset from block top 
+ 0237  3B 06 00CA R		        CMP AX, BLOCK_HEIGHT 
+ 023B  7C E0			        JL CLEAR_BLOCK3_VERTICAL       	
+									
+								; Continue unti
+				l block height cleared 
+				         
+ 023D  5A			    POP DX 
+ 023E  59			    POP CX 
+ 023F  5B			    POP BX 
+ 0240  58			    POP AX 
+				         
+ 0241  F7 1E 009F R		    NEG BALL_VELOCITY_Y                	
+									
+								; Reverse ball'
+				s vertical direction 
+				         
+ 0245  B8 0001			    MOV AX, 1                          	
+									
+								; Set return va
+				lue: 1 (collision) 
+				         
+ 0248  EB 07 90			    JMP EXIT_BLOCK_CHECK3              	
+									
+								; Exit after ha
+				ndling collision 
+				 
+				; 	Process next block 
+ 024B				    BLOCK_NOT_ACTIVE3: 
+ 024B  83 C6 02			        ADD SI, 2                      	
+									
+								; Move to next 
+				block X position 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-24
+
+
+ 024E  47			        INC DI                         	
+									
+								; Move to next 
+				block status 
+ 024F  E2 87			        LOOP CHECK_NEXT_BLOCK3         	
+									
+								; Continue with
+				 next block until CX=0 
+				         
+				; 	Cleanup and return 
+ 0251				    EXIT_BLOCK_CHECK3: 
+ 0251  5F			        POP DI                         	
+									
+								; Restore regis
+				ters 
+ 0252  5E			        POP SI 
+ 0253  59			        POP CX 
+				         
+ 0254  C3			        RET 
+ 0255					CHECK_BLOCK_COLLISION3 ENDP 
+					 
+				;	Fourth Row Collision Procedure 
+					 
+ 0255					CHECK_BLOCK_COLLISION4 PROC NEAR 
+ 0255  51					PUSH CX                        
+				    					
+								; Save CX regis
+				ter to stack 
+ 0256  56					PUSH SI                        
+				    					
+								; Save SI point
+				er to stack 
+ 0257  57					PUSH DI                        
+				    					
+								; Save DI point
+				er to stack 
+						 
+				; 		Initialize counter and pointers
+				 
+ 0258  8B 0E 011C R				MOV CX, NUM_BLOCKS4            
+				    					
+								; Load block co
+				unt for row 4 
+ 025C  BE 011E R				MOV SI, OFFSET BLOCKS_X4       
+				    					
+								; SI points to 
+				X-positions of row 4 blocks 
+ 025F  BF 0135 R				MOV DI, OFFSET BLOCKS_ACTIVE4  
+				    					
+								; DI points to 
+				active status of row 4 blocks 
+						 
+ 0262  B8 0000					MOV AX, 0                      
+				    					
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-25
+
+
+								; Default retur
+				n: 0 (no collision) 
+						 
+				; 	Check each block in row 4 
+ 0265				    CHECK_NEXT_BLOCK4: 
+				         
+				; 		Check if block is active 
+ 0265  8A 05			        MOV AL, [DI]                   	
+									
+								; Get block sta
+				tus 
+ 0267  3C 00			        CMP AL, 0                      	
+									
+								; Check if dest
+				royed (0) 
+ 0269  74 6D			        JE BLOCK_NOT_ACTIVE4           	
+									
+								; Skip if alrea
+				dy destroyed 
+				         
+				; 		Collision detection (AABB metho
+				d) 
+				 
+				; 		Check if ball's right edge > bl
+				ock's left edge 
+ 026B  A1 0093 R		        MOV AX, BALL_X 
+ 026E  03 06 009B R		        ADD AX, BALL_SIZE 
+ 0272  3B 04			        CMP AX, [SI] 
+ 0274  7E 62			        JNG BLOCK_NOT_ACTIVE4     
+				         
+				; 		Check if ball's left edge < blo
+				ck's right edge 
+ 0276  8B 1C			        MOV BX, [SI]            
+ 0278  03 1E 00C8 R		        ADD BX, BLOCK_WIDTH 
+ 027C  39 1E 0093 R		        CMP BALL_X, BX 
+ 0280  7D 56			        JNL BLOCK_NOT_ACTIVE4     
+				 
+				; 		Check if ball's bottom edge > b
+				lock's top edge 
+ 0282  A1 0095 R		        MOV AX, BALL_Y 
+ 0285  03 06 009B R		        ADD AX, BALL_SIZE 
+ 0289  3B 06 0132 R		        CMP AX, BLOCK_Y4 
+ 028D  7E 49			        JNG BLOCK_NOT_ACTIVE4     
+				 
+				; 		Check if ball's top edge < bloc
+				k's bottom edge 
+ 028F  8B 1E 0132 R		        MOV BX, BLOCK_Y4 
+ 0293  03 1E 00CA R		        ADD BX, BLOCK_HEIGHT 
+ 0297  39 1E 0095 R		        CMP BALL_Y, BX 
+ 029B  7D 3B			        JNL BLOCK_NOT_ACTIVE4     
+				         
+				; 		Collision confirmed with this b
+				lock 
+ 029D  C6 05 00					MOV BYTE PTR [DI], 0           
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-26
+
+
+				    					
+								; Mark block as
+				 destroyed 
+				         
+ 02A0  50					PUSH AX 
+ 02A1  53					PUSH BX 
+ 02A2  51					PUSH CX 
+ 02A3  52					PUSH DX 
+							 
+ 02A4  8B 0C					MOV CX, [SI]                   
+				    					
+								; Block's X pos
+				ition 
+ 02A6  8B 16 0132 R				MOV DX, BLOCK_Y4               
+				    					
+								; Block's Y pos
+				ition (row 4) 
+							 
+ 02AA				    CLEAR_BLOCK4_VERTICAL: 
+ 02AA  51			        PUSH CX                        	
+									
+								; Save X starti
+				ng position 
+				         
+ 02AB				    CLEAR_BLOCK4_HORIZONTAL: 
+ 02AB  B4 0C			        MOV AH, 0Ch                    	
+									
+								; Function: dra
+				w pixel 
+ 02AD  B0 00			        MOV AL, 00h                    	
+									
+								; Color: black 
+ 02AF  CD 10			        INT 10h                        	
+									
+								; Draw black pi
+				xel 
+				         
+ 02B1  41			        INC CX                         	
+									
+								; Next X positi
+				on 
+ 02B2  8B C1			        MOV AX, CX 
+ 02B4  2B 04			        SUB AX, [SI] 
+ 02B6  3B 06 00C8 R		        CMP AX, BLOCK_WIDTH 
+ 02BA  7C EF			        JL CLEAR_BLOCK4_HORIZONTAL     	
+									
+								; Continue unti
+				l block width cleared 
+				         
+ 02BC  59			        POP CX                         	
+									
+								; Restore X to 
+				left edge 
+ 02BD  42			        INC DX                        	
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-27
+
+
+									
+								; Next Y row 
+ 02BE  8B C2			        MOV AX, DX 
+ 02C0  2B 06 0132 R		        SUB AX, BLOCK_Y4               	
+									
+								; Calculate Y o
+				ffset from block top 
+ 02C4  3B 06 00CA R		        CMP AX, BLOCK_HEIGHT 
+ 02C8  7C E0			        JL CLEAR_BLOCK4_VERTICAL       	
+									
+								; Continue unti
+				l block height cleared 
+				         
+ 02CA  5A					POP DX 
+ 02CB  59					POP CX 
+ 02CC  5B					POP BX 
+ 02CD  58					POP AX 
+							 
+ 02CE  F7 1E 009F R				NEG BALL_VELOCITY_Y            
+				    					
+								; Reverse ball'
+				s vertical direction 
+							 
+ 02D2  B8 0001					MOV AX, 1                      
+				    					
+								; Set return va
+				lue: 1 (collision) 
+							 
+ 02D5  EB 07 90					JMP EXIT_BLOCK_CHECK4          
+				    					
+								; Exit after ha
+				ndling collision 
+				 
+				; 	Process next block 
+ 02D8				    BLOCK_NOT_ACTIVE4: 
+ 02D8  83 C6 02			        ADD SI, 2                      	
+									
+								; Move to next 
+				block X position 
+ 02DB  47			        INC DI                         	
+									
+								; Move to next 
+				block status 
+ 02DC  E2 87			        LOOP CHECK_NEXT_BLOCK4         	
+									
+								; Continue with
+				 next block until CX=0 
+				         
+				; 	Cleanup and return 
+ 02DE				    EXIT_BLOCK_CHECK4: 
+ 02DE  5F			        POP DI                         	
+									
+								; Restore regis
+				ters 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-28
+
+
+ 02DF  5E			        POP SI 
+ 02E0  59			        POP CX 
+				         
+ 02E1  C3			        RET 
+ 02E2					CHECK_BLOCK_COLLISION4 ENDP 
+				 
+				;	Procedure to reproduce a sound 
+					 
+ 02E2				    PLAY_SOUND PROC NEAR 
+				; 		Input: AX = sound frequency div
+				isor value (higher value = lower frequency) 
+ 02E2  53			        PUSH BX                 	
+									
+									; Save 
+				registers to stack 
+ 02E3  51			        PUSH CX 
+ 02E4  52			        PUSH DX 
+ 02E5  50			        PUSH AX                 	
+									
+									; Save 
+				frequency value 
+				         
+				; 		Configure PIT (Programmable Int
+				erval Timer) for sound generation 
+ 02E6  B0 B6			        MOV AL, 0B6h           		
+									
+									; Comma
+				nd byte: Channel 2, Mode 3 (square wave), 16-bi
+				t binary 
+ 02E8  E6 43			        OUT 43h, AL            		
+									
+									; Send 
+				command to PIT control port (8253/8254 chip) 
+				         
+				; 		Set frequency for the timer 
+ 02EA  58			        POP AX                 		
+									
+									; Retri
+				eve frequency divisor value 
+ 02EB  E6 42			        OUT 42h, AL            		
+									
+									; Send 
+				low byte of divisor to Channel 2 data port 
+ 02ED  8A C4			        MOV AL, AH             		
+									
+									; Move 
+				high byte to AL 
+ 02EF  E6 42			        OUT 42h, AL            		
+									
+									; Send 
+				high byte of divisor to Channel 2 data port 
+				         
+				;	 	Enable PC speaker 
+ 02F1  E4 61			        IN AL, 61h             		
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-29
+
+
+									
+									; Read 
+				current value from system control port 
+ 02F3  0C 03			        OR AL, 03h             		
+									
+									; Set b
+				its 0 & 1 (bit 0: timer gate, bit 1: speaker da
+				ta) 
+ 02F5  E6 61			        OUT 61h, AL            		
+									
+									; Write
+				 back to enable speaker output 
+				         
+				; 		Delay loop to control sound dur
+				ation 
+				        ;MOV CX, SOUND_DURATION 	
+									
+									
+					; Load outer loop counter 
+						;DELAY_LOOP: 
+						;	PUSH CX                
+									
+									
+					; Save outer loop counter 
+						;	MOV CX, 0FFFFh         
+									
+									
+					; Set inner loop to max value (65535) 
+						;INNER_DELAY: 
+						;	LOOP INNER_DELAY       
+									
+									
+					; Decrement CX and jump if not zero (ti
+				ming delay) 
+						;	POP CX                 
+									
+									
+					; Restore outer loop counter 
+						;	LOOP DELAY_LOOP        
+									
+									
+					; Decrement outer counter and continue 
+				if not zero 
+				         
+				; 		Disable PC speaker 
+ 02F7  E4 61			        IN AL, 61h             		
+									
+									; Read 
+				current value from system control port 
+ 02F9  24 FC			        AND AL, 0FCh           		
+									
+									; Clear
+				 bits 0 & 1 (disconnect speaker and timer) 
+ 02FB  E6 61			        OUT 61h, AL           	 	
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-30
+
+
+									
+									; Write
+				 back to disable speaker 
+				         
+ 02FD  5A			        POP DX                 		
+									
+									; Resto
+				re registers from stack 
+ 02FE  59			        POP CX 
+ 02FF  5B			        POP BX 
+ 0300  C3			        RET                    		
+									
+									; Retur
+				n to caller 
+ 0301				    PLAY_SOUND ENDP 
+				 
+				;	Procedure for moving ball 
+				 
+ 0301					MOVE_BALL PROC NEAR 
+					 
+				; 	Initialize collision flag 
+ 0301  BB 0000			    MOV BX, 0                                  
+				 					
+						; 0 = no collision, 1 = collisi
+				on detected 
+				     
+				; 	Horizontal movement 
+ 0304  A1 009D R		    MOV AX, BALL_VELOCITY_X                    
+				 					
+						; Get X velocity 
+ 0307  01 06 0093 R		    ADD BALL_X, AX                             
+				 					
+						; Update ball X position 
+				     
+				; 	Check horizontal border collisions 
+ 030B  A1 0005 R		    MOV AX, WINDOW_BOUNDS                      
+				 					
+						; Get left boundary 
+ 030E  39 06 0093 R		    CMP BALL_X, AX                             
+				 					
+						; Compare ball position with le
+				ft boundary 
+ 0312  7D 15			    JGE CHECK_RIGHT_BORDER                     
+				 					
+						; If not colliding with left bo
+				rder, check right 
+				     
+				; 	Left border collision handling 
+ 0314  A3 0093 R		    MOV BALL_X, AX                             
+				 					
+						; Force ball position to bounda
+				ry 
+ 0317  F7 1E 009D R		    NEG BALL_VELOCITY_X                        
+				 					
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-31
+
+
+						; Reverse X velocity 
+ 031B  BB 0001			    MOV BX, 1                                  
+				 					
+						; Mark collision as handled 
+					 
+ 031E  50				PUSH AX                                
+				     					
+						; Save AX 
+ 031F  A1 014A R			MOV AX, BEEP_FREQ_MED                  
+				     					
+						; Load average frequency 
+ 0322  E8 02E2 R			CALL PLAY_SOUND                        
+				    					
+							; Play sound 
+ 0325  58				POP AX                                 
+				     					
+						; Restore AX 
+				 
+ 0326  EB 21 90			    JMP CHECK_VERTICAL                         
+				 					
+						; Proceed to vertical checks 
+				     
+				; 	Right border collision check 
+ 0329				    CHECK_RIGHT_BORDER: 
+ 0329  A1 0001 R		        MOV AX, WINDOW_WIDTH                   
+				 					
+						; Get screen width 
+ 032C  2B 06 009B R		        SUB AX, BALL_SIZE                      
+				 					
+						; Subtract ball size 
+ 0330  2B 06 0005 R		        SUB AX, WINDOW_BOUNDS                  
+				 					
+						; Adjust for boundary 
+ 0334  39 06 0093 R		        CMP BALL_X, AX                         
+				 					
+						; Compare with ball position 
+ 0338  7E 0F			        JLE CHECK_VERTICAL                     
+				 					
+						; If not colliding, check verti
+				cal 
+				         
+				; 		Right border collision handling
+				 
+ 033A  F7 1E 009D R		        NEG BALL_VELOCITY_X                    
+				 					
+						; Reverse X velocity 
+ 033E  BB 0001			        MOV BX, 1                              
+				 					
+						; Mark collision as handled 
+ 0341  50					PUSH AX                        
+				             				
+						; Save AX 
+ 0342  A1 014A R				MOV AX, BEEP_FREQ_MED          
+				             				
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-32
+
+
+						; Load average frequency 
+ 0345  E8 02E2 R				CALL PLAY_SOUND                
+				            				
+							; Play sound 
+ 0348  58					POP AX                         
+				             				
+						; Restore AX 
+				     
+				; 	Vertical movement and collision checks 
+ 0349				    CHECK_VERTICAL: 
+					 
+				; 		Update ball Y position 
+ 0349  A1 009F R		        MOV AX, BALL_VELOCITY_Y                
+				 					
+						; Get Y velocity 
+ 034C  29 06 0095 R		        SUB BALL_Y, AX                         
+				 					
+						; Update ball Y position (up is
+				 negative) 
+				         
+				; 		Skip vertical checks if collisi
+				on already processed 
+ 0350  83 FB 01			        CMP BX, 1                              
+				 					
+						; Check collision flag 
+ 0353  75 03			        JNE Continue                           
+				 					
+						; If no collision yet, continue
+				 
+ 0355  E9 0460 R		        JMP EXIT_MOVE_BALL                     
+				 					
+						; Otherwise exit 
+				         
+ 0358				        Continue: 
+				; 			Top border collision ch
+				eck 
+ 0358  A1 0007 R		            MOV AX, WINDOW_BOUND_TOP           
+				 					
+						; Get top boundary 
+ 035B  39 06 0095 R		            CMP BALL_Y, AX                     
+				 					
+						; Compare ball position 
+ 035F  7D 15			            JGE CHECK_BOTTOM_BORDER            
+					 				
+							; If not colliding, che
+				ck bottom 
+				             
+				; 			Top border collision ha
+				ndling 
+ 0361  A3 0095 R		            MOV BALL_Y, AX                     
+				 					
+						; Force ball position to bounda
+				ry 
+ 0364  F7 1E 009F R		            NEG BALL_VELOCITY_Y                
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-33
+
+
+				 					
+						; Reverse Y velocity 
+ 0368  BB 0001			            MOV BX, 1                          
+				 					
+						; Mark collision as handled 
+							 
+ 036B  50						PUSH AX                
+				                     			
+						; Save AX 
+ 036C  A1 014A R					MOV AX, BEEP_FREQ_MED  
+				                     			
+						; Load average frequency 
+ 036F  E8 02E2 R					CALL PLAY_SOUND        
+				                    			
+							; Play sound 
+ 0372  58						POP AX                 
+				                     			
+						; Restore AX 
+ 0373  EB 38 90			            JMP CHECK_BLOCKS                   
+				 					
+						; Proceed to block collision ch
+				ecks 
+				         
+				; 	Bottom border collision check (game ove
+				r condition) 
+ 0376				    CHECK_BOTTOM_BORDER: 
+ 0376  A1 0003 R		        MOV AX, WINDOW_HEIGHT                  
+				 					
+						; Get screen height 
+ 0379  2B 06 009B R		        SUB AX, BALL_SIZE                      
+				 					
+						; Subtract ball size 
+ 037D  2B 06 0005 R		        SUB AX, WINDOW_BOUNDS                  
+				 					
+						; Adjust for boundary 
+ 0381  39 06 0095 R		        CMP BALL_Y, AX                         
+				 					
+						; Compare with ball position 
+ 0385  7E 26			        JLE CHECK_BLOCKS                       
+				 					
+						; If not colliding, check block
+				s 
+				         
+				;	 	Ball fell below screen - lose l
+				ife 
+ 0387				        DECREMENT_LIFES: 
+ 0387  FE 0E 0086 R		            DEC GAME_LIFES                     
+				 					
+						; Decrease player lives 
+ 038B  E8 04CE R		            CALL RESET_BALL_POSITION           
+				 					
+						; Reset ball to starting positi
+				on 
+				             
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-34
+
+
+ 038E  E8 072A R		            CALL UPDATE_LIFES                  
+				 					
+						; Update life counter display 
+				             
+ 0391  80 3E 0086 R 00		            CMP GAME_LIFES,0h                  
+				 					
+						; Check if out of lives 
+ 0396  7E 07			            JLE GAME_OVER                      
+				 					
+						; If no lives left, game over 
+ 0398  BB 0001			            MOV BX, 1                          
+				 					
+						; Mark collision as handled 
+ 039B  E9 0460 R		            JMP EXIT_MOVE_BALL                 
+				 					
+						; Exit procedure 
+				             
+ 039E  C3			            RET 
+				             
+				; 		Game over handling 
+ 039F				        GAME_OVER:                             
+				  
+ 039F  C6 06 0086 R 03		            MOV GAME_LIFES,03h                 
+				 					
+						; Reset lives to 3 
+ 03A4  E8 072A R		            CALL UPDATE_LIFES                  
+				 					
+						; Update life display 
+ 03A7  C6 06 000A R 00		            MOV GAME_ACTIVE,00h                
+				 					
+						; Set game inactive 
+ 03AC  C3			            RET                                
+				  
+				         
+				; 	Block collision checks 
+ 03AD				    CHECK_BLOCKS: 
+					 
+				; 		Skip if collision already handl
+				ed 
+ 03AD  83 FB 01			        CMP BX, 1                              
+				 					
+						; Check collision flag 
+ 03B0  74 26			        JE CHECK_PADDLE                        
+				 					
+						; If collision handled, check p
+				addle 
+				         
+				; 		Check row 1 blocks 
+ 03B2  E8 007F R		        CALL CHECK_BLOCK_COLLISION             
+				 					
+						; Check first row blocks 
+ 03B5  3D 0001			        CMP AX, 1                              
+				 					
+						; Did collision occur? 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-35
+
+
+ 03B8  74 18			        JE BLOCK_COLLISION_FOUND               
+				 					
+						; If yes, handle it 
+				         
+				;		Check row 2 blocks 
+ 03BA  E8 0118 R		        CALL CHECK_BLOCK_COLLISION2            
+				 					
+						; Check second row blocks 
+ 03BD  3D 0001			        CMP AX, 1                              
+				 					
+						; Did collision occur? 
+ 03C0  74 10			        JE BLOCK_COLLISION_FOUND               
+				 					
+						; If yes, handle it 
+				         
+				; 		Check row 3 blocks 
+ 03C2  E8 01C8 R		        CALL CHECK_BLOCK_COLLISION3            
+				 					
+						; Check third row blocks 
+ 03C5  3D 0001			        CMP AX, 1                              
+				 					
+						; Did collision occur? 
+ 03C8  74 08			        JE BLOCK_COLLISION_FOUND               
+				 					
+						; If yes, handle it 
+				         
+				;	 	Check row 4 blocks 
+ 03CA  E8 0255 R		        CALL CHECK_BLOCK_COLLISION4            
+				 					
+						; Check fourth row blocks 
+ 03CD  3D 0001			        CMP AX, 1                              
+				 					
+						; Did collision occur? 
+ 03D0  75 06			        JNE CHECK_PADDLE                       
+				 					
+						; If no, check paddle 
+				         
+				; 	Handle block collision 
+ 03D2				    BLOCK_COLLISION_FOUND: 
+ 03D2  BB 0001			        MOV BX, 1                              
+				 					
+						; Mark collision as handled 
+ 03D5  E9 0460 R		        JMP EXIT_MOVE_BALL                     
+				 					
+						; Exit procedure 
+				         
+				;	Paddle collision check 
+ 03D8				    CHECK_PADDLE: 
+					 
+				; 		Skip if collision already handl
+				ed 
+ 03D8  83 FB 01			        CMP BX, 1                              
+				 					
+						; Check collision flag 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-36
+
+
+ 03DB  75 03			        JNE CONTINUE_CHECK                     
+				 					
+						; If no collision yet, continue
+				 
+ 03DD  E9 0460 R		        JMP EXIT_MOVE_BALL                     
+				 					
+						; Otherwise exit 
+				         
+ 03E0				    CONTINUE_CHECK: 
+					 
+				; 		AABB collision detection with p
+				addle 
+ 03E0  A1 0093 R		        MOV AX, BALL_X                         
+				 					
+						; Ball right edge 
+ 03E3  03 06 009B R		        ADD AX, BALL_SIZE 
+ 03E7  3B 06 00A1 R		        CMP AX, PADDLE_X                       
+				 					
+						; Compare with paddle left edge
+				 
+ 03EB  72 73			        JB EXIT_MOVE_BALL                      
+				 					
+						; Exit if no collision 
+				     
+ 03ED  A1 00A1 R		        MOV AX, PADDLE_X                       
+				 					
+						; Paddle right edge 
+ 03F0  03 06 00A9 R		        ADD AX, PADDLE_WIDTH 
+ 03F4  39 06 0093 R		        CMP BALL_X, AX                         
+				 					
+						; Compare with ball left edge 
+ 03F8  73 66			        JAE EXIT_MOVE_BALL                     
+				 					
+						; Exit if no collision 
+				     
+ 03FA  A1 0095 R		        MOV AX, BALL_Y                         
+				 					
+						; Ball bottom edge 
+ 03FD  03 06 009B R		        ADD AX, BALL_SIZE 
+ 0401  3B 06 00A5 R		        CMP AX, PADDLE_Y                       
+				 					
+						; Compare with paddle top edge 
+ 0405  72 59			        JB EXIT_MOVE_BALL                      
+				 					
+						; Exit if no collision 
+				     
+ 0407  A1 00A5 R		        MOV AX, PADDLE_Y                       
+				 					
+						; Paddle bottom edge 
+ 040A  03 06 00AB R		        ADD AX, PADDLE_HEIGHT 
+ 040E  39 06 0095 R		        CMP BALL_Y, AX                         
+				 					
+						; Compare with ball top edge 
+ 0412  73 4C			        JAE EXIT_MOVE_BALL                     
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-37
+
+
+				 					
+						; Exit if no collision 
+				         
+				; 	Collision with paddle confirmed - handl
+				e bounce 
+				     
+				; 	Position ball above paddle 
+ 0414  A1 00A5 R		    MOV AX, PADDLE_Y                           
+				 					
+						; Get paddle Y 
+ 0417  2B 06 009B R		    SUB AX, BALL_SIZE                          
+				 					
+						; Calculate position above padd
+				le 
+ 041B  A3 0095 R		    MOV BALL_Y, AX                             
+				 					
+						; Set ball Y 
+				  
+					; *** Play paddle collision sound *** 
+ 041E  50				PUSH AX                                
+				     ; Save AX 
+ 041F  A1 0146 R			MOV AX, BEEP_FREQ_HIGH                 
+				     ; Load high frequency 
+ 0422  E8 02E2 R			CALL PLAY_SOUND                        
+				     ; Play the sound 
+ 0425  58				POP AX                                 
+				     ; Restore AX 
+				 
+				 
+				; 	Calculate paddle boundaries 
+ 0426  8B 36 00A1 R		    MOV SI, PADDLE_X                           
+				 					
+						; SI = paddle left edge 
+				     
+ 042A  8B 3E 00A1 R		    MOV DI, PADDLE_X                           
+				 					
+						; DI = paddle right edge 
+ 042E  03 3E 00A9 R		    ADD DI, PADDLE_WIDTH 
+				     
+				; 	Find paddle midpoint 
+ 0432  8B 1E 00A1 R		    MOV BX, PADDLE_X                           
+				 					
+						; Start with left edge 
+ 0436  8B 0E 00A9 R		    MOV CX, PADDLE_WIDTH                       
+				  
+ 043A  D1 E9			    SHR CX, 1                                  
+				 					
+						; Divide width by 2 
+ 043C  03 D9			    ADD BX, CX                                 
+				 					
+						; BX = paddle midpoint 
+				     
+				; 	Calculate ball center point 
+ 043E  A1 0093 R		    MOV AX, BALL_X                             
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-38
+
+
+				 					
+						; Start with left edge 
+ 0441  03 06 009B R		    ADD AX, BALL_SIZE                          
+				  
+ 0445  D1 E8			    SHR AX, 1                                  
+				 					
+						; AX = ball center 
+				     
+				; 	Determine bounce direction based on hit
+				 position 
+ 0447  3B C3			    CMP AX, BX                                 
+				 					
+						; Compare ball center with padd
+				le midpoint 
+ 0449  7C 03			    JL LEFT                                
+									
+								; If ball hit l
+				eft side, bounce left 
+ 044B  EB 0C 90			    JMP RIGHT                                 
+									
+							; Otherwise bounce righ
+				t 
+				     
+ 044E				    LEFT: 
+				; 		Bounce left 
+ 044E  F7 1E 009F R		        NEG BALL_VELOCITY_Y                    
+				 					
+						; Reverse Y velocity 
+ 0452  F7 1E 009D R		        NEG BALL_VELOCITY_X                    
+				 					
+						; Ensure X velocity is negative
+				 
+ 0456  EB 08 90			        JMP EXIT_MOVE_BALL                     
+				 					
+						; Exit procedure 
+				         
+ 0459				    RIGHT: 
+				; 		Bounce right 
+ 0459  F7 1E 009F R		        NEG BALL_VELOCITY_Y                    
+				 					
+						; Reverse Y velocity 
+ 045D  EB 01 90			        JMP EXIT_MOVE_BALL                     
+				 					
+						; X velocity remains positive 
+				         
+ 0460				    EXIT_MOVE_BALL: 
+ 0460  C3			        RET                                    
+				 					
+						; Return from procedure 
+				 
+ 0461				MOVE_BALL ENDP 
+					 
+				;	Paddle movement procedure 
+					 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-39
+
+
+ 0461					MOVE_PADDLE PROC NEAR 
+ 0461  50				PUSH AX                                
+				     					
+						; Save registers 
+ 0462  53			    PUSH BX 
+ 0463  51			    PUSH CX 
+				     
+				; 	Check for keypress 
+ 0464  B4 01			    MOV AH,01h                                 
+				 					
+						; BIOS keyboard status function
+				 
+ 0466  CD 16			    INT 16h                                    
+				 					
+						; Call BIOS interrupt 
+ 0468  74 60			    JZ EXIT_PADDLE_MOVEMENT                    
+				 					
+						; If no key pressed, exit 
+				     
+				; 	Get pressed key 
+ 046A  B4 00			    MOV AH,00h                                 
+				 					
+						; BIOS read key function 
+ 046C  CD 16			    INT 16h                                    
+				 					
+						; Get keypress from buffer 
+				     
+				; 	Check for left movement keys (A/a) 
+ 046E  3C 61			    CMP AL,61h                                 
+				 					
+						; Compare with 'a' 
+ 0470  74 0F			    JE MOVE_PADDLE_LEFT                        
+				  
+ 0472  3C 41			    CMP AL,41h                                 
+				 					
+						; Compare with 'A' 
+ 0474  74 0B			    JE MOVE_PADDLE_LEFT                        
+				  
+				     
+				; 	Check for right movement keys (D/d) 
+ 0476  3C 64			    CMP AL,64h                                 
+				 					
+						; Compare with 'd' 
+ 0478  74 23			    JE MOVE_PADDLE_RIGHT                       
+				  
+ 047A  3C 44			    CMP AL,44h                                 
+				 					
+						; Compare with 'D' 
+ 047C  74 1F			    JE MOVE_PADDLE_RIGHT                       
+				  
+				     
+				; 	If not a movement key, exit 
+ 047E  EB 4A 90			    JMP EXIT_PADDLE_MOVEMENT 
+				     
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-40
+
+
+				; 	Left movement handling 
+ 0481				    MOVE_PADDLE_LEFT: 
+ 0481  A1 00AD R		        MOV AX,PADDLE_VELOCITY                 
+				 					
+						; Get movement speed 
+ 0484  29 06 00A1 R		        SUB PADDLE_X,AX                        
+				 					
+						; Move paddle left 
+				         
+				; 		Check left boundary 
+ 0488  A1 00A1 R		        MOV AX,PADDLE_X                        
+				 					
+						; Get paddle position 
+ 048B  3B 06 0005 R		        CMP AX,WINDOW_BOUNDS                   
+				 					
+						; Compare with left boundary 
+ 048F  7C 03			        JL FIX_MOVE_PADDLE_LEFT                
+				 					
+						; If beyond boundary, fix posit
+				ion 
+ 0491  EB 37 90			        JMP EXIT_PADDLE_MOVEMENT               
+				 					
+						; Otherwise exit 
+				         
+ 0494				    FIX_MOVE_PADDLE_LEFT: 
+ 0494  A1 0005 R		        MOV AX,WINDOW_BOUNDS                   
+				 					
+						; Get boundary value 
+ 0497  A3 00A1 R		        MOV PADDLE_X, AX                       
+				 					
+						; Set paddle to boundary 
+ 049A  EB 2E 90			        JMP EXIT_PADDLE_MOVEMENT               
+				 					
+						; Exit procedure 
+				             
+				; 	Right movement handling 
+ 049D				    MOVE_PADDLE_RIGHT: 
+ 049D  A1 00AD R		        MOV AX, PADDLE_VELOCITY                
+				 					
+						; Get movement speed 
+ 04A0  01 06 00A1 R		        ADD PADDLE_X, AX                       
+									
+							; Move paddle right 
+				     
+				; 		Check right boundary 
+ 04A4  A1 00A9 R		        MOV AX, PADDLE_WIDTH                   
+				 					
+						; Get paddle width 
+ 04A7  03 06 00A1 R		        ADD AX, PADDLE_X                       
+				 					
+						; Calculate right edge 
+				         
+ 04AB  8B 1E 0001 R		        MOV BX, WINDOW_WIDTH                   
+				 					
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-41
+
+
+						; Get window width 
+ 04AF  2B 1E 0005 R		        SUB BX, WINDOW_BOUNDS                  
+				 					
+						; Adjust for boundary 
+ 04B3  3B C3			        CMP AX, BX                             
+				 					
+						; Compare with right boundary 
+ 04B5  7F 03			        JG FIX_MOVE_PADDLE_RIGHT               
+				 					
+						; If beyond boundary, fix posit
+				ion 
+ 04B7  EB 11 90			        JMP EXIT_PADDLE_MOVEMENT               
+				 					
+						; Otherwise exit 
+				         
+ 04BA				    FIX_MOVE_PADDLE_RIGHT: 
+ 04BA  8B 1E 0001 R		        MOV BX, WINDOW_WIDTH                   
+				 					
+						; Get window width 
+ 04BE  2B 1E 00A9 R		        SUB BX, PADDLE_WIDTH                   
+				 					
+						; Subtract paddle width 
+ 04C2  2B 1E 0005 R		        SUB BX, WINDOW_BOUNDS                  
+				 					
+						; Adjust for boundary 
+ 04C6  89 1E 00A1 R		        MOV PADDLE_X, BX                       
+				 					
+						; Set paddle to boundary 
+				         
+ 04CA				    EXIT_PADDLE_MOVEMENT: 
+ 04CA  59			        POP CX                                 
+				 					
+						; Restore registers 
+ 04CB  5B			        POP BX 
+ 04CC  58			        POP AX 
+ 04CD  C3			        RET                                    
+				 					
+						; Return from procedure 
+ 04CE					MOVE_PADDLE ENDP 
+					 
+				; 	Procedure to reset the ball position 
+				 
+ 04CE					RESET_BALL_POSITION PROC NEAR 
+ 04CE  50					PUSH AX 
+						 
+ 04CF  A1 008F R				MOV AX,BALL_ORIGINAL_X         
+				             				
+						; Get original X position 
+ 04D2  A3 0093 R				MOV BALL_X,AX                  
+				             				
+						; Reset ball X to original posi
+				tion 
+ 04D5  A1 0091 R				MOV AX,BALL_ORIGINAL_Y         
+				             				
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-42
+
+
+						; Get original Y position 
+ 04D8  A3 0095 R				MOV BALL_Y,AX                  
+				             				
+						; Reset ball Y to original posi
+				tion 
+				 
+				; 		Reset velocities to original va
+				lues, direction upward 
+ 04DB  A1 009D R				MOV AX, BALL_VELOCITY_X        
+				             				
+						; Get original X velocity 
+ 04DE  A3 009D R				MOV BALL_VELOCITY_X, AX        
+				             				
+						; Reset X velocity 
+ 04E1  A1 009F R				MOV AX, BALL_VELOCITY_Y        
+				             				
+						; Get original Y velocity 
+ 04E4  F7 D8					NEG AX                         
+				             				
+						; Make velocity upward (positiv
+				e) 
+ 04E6  A3 009F R				MOV BALL_VELOCITY_Y, AX        
+				             				
+						; Set Y velocity 
+				 
+ 04E9  58					POP AX 
+ 04EA  C3					RET                            
+				             				
+						; Return from procedure 
+ 04EB					RESET_BALL_POSITION ENDP 
+				 
+				; 	Procedure to draw blocks (first row) 
+ 04EB					DRAW_BLOCKS PROC NEAR 
+ 04EB  8B 0E 00AF R				MOV CX, NUM_BLOCKS             
+				     					
+							; Initialize block coun
+				ter 
+ 04EF  BE 00B1 R				MOV SI, OFFSET BLOCKS_X        
+				     					
+							; SI points to array of
+				 X positions 
+ 04F2  BF 00CC R				MOV DI, OFFSET BLOCKS_ACTIVE   
+				     					
+							; DI points to array of
+				 block states 
+						 
+				; 		Loop through all blocks 
+ 04F5						DRAW_BLOCKS_LOOP: 
+ 04F5  83 F9 00						CMP CX, 0              
+				         				
+								; Check if all 
+				blocks processed 
+ 04F8  74 3A						JE DRAW_BLOCKS_EXIT    
+				         				
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-43
+
+
+								; Exit if done 
+							 
+ 04FA  8A 05						MOV AL, [DI]           
+				         				
+								; Get block act
+				ive status 
+ 04FC  3C 00						CMP AL, 0              
+				         				
+								; Check if bloc
+				k is destroyed 
+ 04FE  74 2D						JE NEXT_BLOCK          
+				         				
+								; Skip if block
+				 is inactive 
+							 
+ 0500  51						PUSH CX                
+				         				
+								; Save block co
+				unter 
+							 
+				; 			Set coordinates for dra
+				wing 
+ 0501  8B 0C						MOV CX, [SI]           
+				         				
+								; Load X positi
+				on from array 
+ 0503  8B 16 00C5 R					MOV DX, BLOCK_Y        
+				         				
+								; Load Y positi
+				on (row 1) 
+							 
+ 0507						DRAW_BLOCK_VERTICAL: 
+ 0507  51						PUSH CX                
+				         				
+								; Save X positi
+				on 
+							 
+ 0508						DRAW_BLOCK_HORIZONTAL: 
+ 0508  B4 0C						MOV AH, 0Ch            
+				         				
+								; Function: dra
+				w pixel 
+ 050A  B0 0C						MOV AL, 0Ch            
+				         				
+								; Color: light 
+				red 
+ 050C  B7 00						MOV BH, 00h            
+				         				
+								; Page number: 
+				0 
+ 050E  CD 10						INT 10h                
+				        	 			
+									; Draw 
+				pixel 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-44
+
+
+							 
+ 0510  41						INC CX                 
+				         				
+								; Next X positi
+				on 
+ 0511  8B C1						MOV AX, CX 
+ 0513  2B 04						SUB AX, [SI]           
+				         				
+								; Calculate cur
+				rent width 
+ 0515  3B 06 00C8 R					CMP AX, BLOCK_WIDTH 
+ 0519  7C ED						JL DRAW_BLOCK_HORIZONTA
+				L        				
+								; Continue unti
+				l block width complete 
+							 
+ 051B  59						POP CX                 
+				         				
+								; Restore X to 
+				left edge 
+ 051C  42						INC DX                 
+				         				
+								; Next Y row 
+ 051D  8B C2						MOV AX, DX 
+ 051F  2B 06 00C5 R					SUB AX, BLOCK_Y        
+				         				
+								; Calculate cur
+				rent height 
+ 0523  3B 06 00CA R					CMP AX, BLOCK_HEIGHT 
+ 0527  7C DE						JL DRAW_BLOCK_VERTICAL 
+				         				
+								; Continue unti
+				l block height complete 
+							 
+ 0529  59						POP CX                 
+				         				
+								; Restore block
+				 counter 
+ 052A  EB 01 90						JMP CONTINUE_BLOCK_LOOP
+				 
+							 
+ 052D						NEXT_BLOCK: 
+				; 		Skip drawing for inactive block
+				s 
+							 
+ 052D						CONTINUE_BLOCK_LOOP: 
+ 052D  83 C6 02						ADD SI, 2              
+				         				
+								; Move to next 
+				X position (2 bytes per word) 
+ 0530  47						INC DI                 
+				         				
+								; Move to next 
+				active status 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-45
+
+
+ 0531  49						DEC CX                 
+				         				
+								; Decrement blo
+				ck counter 
+ 0532  EB C1						JMP DRAW_BLOCKS_LOOP   
+				         				
+								; Process next 
+				block 
+							 
+ 0534						DRAW_BLOCKS_EXIT: 
+ 0534  C3						RET                    
+				         				
+								; Return from p
+				rocedure 
+ 0535					DRAW_BLOCKS ENDP 
+					 
+				; 	Procedure to draw blocks (second row) 
+ 0535					DRAW_BLOCKS2 PROC NEAR 
+ 0535  8B 0E 00D6 R				MOV CX, NUM_BLOCKS2            
+				     					
+							; Initialize block coun
+				ter for row 2 
+ 0539  BE 00D8 R				MOV SI, OFFSET BLOCKS_X2       
+				     					
+							; SI points to X positi
+				ons for row 2 
+ 053C  BF 00EF R				MOV DI, OFFSET BLOCKS_ACTIVE2  
+				     					
+							; DI points to active s
+				tatus for row 2 
+						 
+				; 		Loop through all blocks in seco
+				nd row 
+ 053F						DRAW_BLOCKS_LOOP2: 
+ 053F  83 F9 00						CMP CX, 0              
+				         				
+								; Check if all 
+				blocks processed 
+ 0542  74 3B						JE DRAW_BLOCKS_EXIT2   
+				         				
+								; Exit if done 
+							 
+ 0544  8A 05						MOV AL, [DI]           
+				         				
+								; Get block act
+				ive status 
+ 0546  3C 00						CMP AL, 0              
+				         				
+								; Check if bloc
+				k is destroyed 
+ 0548  74 2E						JE NEXT_BLOCK2         
+				         				
+								; Skip if block
+				 is inactive 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-46
+
+
+							 
+ 054A  51						PUSH CX                
+				         				
+								; Save block co
+				unter 
+				 
+				; 			Set coordinates for dra
+				wing 
+ 054B  8B 0C						MOV CX, [SI]           
+				         				
+								; Load X positi
+				on from array 
+ 054D  8B 16 00EC R					MOV DX, BLOCK_Y2       
+				         				
+								; Load Y positi
+				on for row 2 
+							 
+ 0551						DRAW_BLOCK_VERTICAL2: 
+ 0551  51						PUSH CX                
+				         				
+								; Save X positi
+				on 
+							 
+ 0552						DRAW_BLOCK_HORIZONTAL2: 
+ 0552  B4 0C						MOV AH, 0Ch            
+				         				
+								; Function: dra
+				w pixel 
+ 0554  A0 00EE R					MOV AL, BLOCK_COLOR2   
+				         				
+								; Color for sec
+				ond row blocks 
+ 0557  B7 00						MOV BH, 00h            
+				         				
+								; Page number: 
+				0 
+ 0559  CD 10						INT 10h                
+				         				
+								; Draw pixel 
+							 
+ 055B  41						INC CX                 
+				         				
+								; Next X positi
+				on 
+ 055C  8B C1						MOV AX, CX 
+ 055E  2B 04						SUB AX, [SI]           
+				         				
+								; Calculate cur
+				rent width 
+ 0560  3B 06 00C8 R					CMP AX, BLOCK_WIDTH 
+ 0564  7C EC						JL DRAW_BLOCK_HORIZONTA
+				L2       				
+								; Continue unti
+				l block width complete 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-47
+
+
+							 
+ 0566  59						POP CX                 
+				         				
+								; Restore X to 
+				left edge 
+ 0567  42						INC DX                 
+				         				
+								; Next Y row 
+ 0568  8B C2						MOV AX, DX 
+ 056A  2B 06 00EC R					SUB AX, BLOCK_Y2       
+				         				
+								; Calculate cur
+				rent height 
+ 056E  3B 06 00CA R					CMP AX, BLOCK_HEIGHT 
+ 0572  7C DD						JL DRAW_BLOCK_VERTICAL2
+				         				
+								; Continue unti
+				l block height complete 
+							 
+ 0574  59						POP CX                 
+				         				
+								; Restore block
+				 counter 
+ 0575  EB 01 90						JMP CONTINUE_BLOCK_LOOP
+				2 
+							 
+ 0578						NEXT_BLOCK2: 
+				; 		Skip drawing for inactive block
+				s 
+							 
+ 0578						CONTINUE_BLOCK_LOOP2: 
+ 0578  83 C6 02						ADD SI, 2              
+				         				
+								; Move to next 
+				X position (2 bytes per word) 
+ 057B  47						INC DI                 
+				         				
+								; Move to next 
+				active status 
+ 057C  49						DEC CX                 
+				         				
+								; Decrement blo
+				ck counter 
+ 057D  EB C0						JMP DRAW_BLOCKS_LOOP2  
+				         				
+								; Process next 
+				block 
+							 
+ 057F						DRAW_BLOCKS_EXIT2: 
+ 057F  C3						RET                    
+				         				
+								; Return from p
+				rocedure 
+ 0580					DRAW_BLOCKS2 ENDP 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-48
+
+
+					 
+				; 	Procedure to draw blocks (third row) 
+				 
+ 0580					DRAW_BLOCKS3 PROC NEAR 
+ 0580  8B 0E 00F9 R				MOV CX, NUM_BLOCKS3            
+				     					
+							; Initialize block coun
+				ter for row 3 
+ 0584  BE 00FB R				MOV SI, OFFSET BLOCKS_X3       
+				     					
+							; SI points to X positi
+				ons for row 3 
+ 0587  BF 0112 R				MOV DI, OFFSET BLOCKS_ACTIVE3  
+				     					
+							; DI points to active s
+				tatus for row 3 
+						 
+				; 		Loop through all blocks in thir
+				d row 
+ 058A						DRAW_BLOCKS_LOOP3: 
+ 058A  83 F9 00						CMP CX, 0              
+				         				
+								; Check if all 
+				blocks processed 
+ 058D  74 39						JE DRAW_BLOCKS_EXIT3   
+				         				
+								; Exit if done 
+							 
+ 058F  8A 05						MOV AL, [DI]           
+				         				
+								; Get block act
+				ive status 
+ 0591  3C 00						CMP AL, 0              
+				         				
+								; Check if bloc
+				k is destroyed 
+ 0593  74 2C						JE NEXT_BLOCK3         
+				         				
+								; Skip if block
+				 is inactive 
+							 
+ 0595  51						PUSH CX                
+				         				
+								; Save block co
+				unter 
+							 
+				; 			Set coordinates for dra
+				wing 
+ 0596  8B 0C						MOV CX, [SI]           
+				         				
+								; Load X positi
+				on from array 
+ 0598  8B 16 010F R					MOV DX, BLOCK_Y3       
+				         				
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-49
+
+
+								; Load Y positi
+				on for row 3 
+							 
+ 059C						DRAW_BLOCK_VERTICAL3: 
+ 059C  51						PUSH CX                
+				         				
+								; Save X positi
+				on 
+							 
+ 059D						DRAW_BLOCK_HORIZONTAL3: 
+ 059D  B4 0C						MOV AH, 0Ch            
+				         				
+								; Function: dra
+				w pixel 
+ 059F  A0 0111 R					MOV AL, BLOCK_COLOR3   
+				         				
+								; Color for thi
+				rd row blocks (green) 
+ 05A2  CD 10						INT 10h                
+				         				
+								; Draw pixel 
+							 
+ 05A4  41						INC CX                 
+				         				
+								; Next X positi
+				on 
+ 05A5  8B C1						MOV AX, CX 
+ 05A7  2B 04						SUB AX, [SI]           
+				         				
+								; Calculate cur
+				rent width 
+ 05A9  3B 06 00C8 R					CMP AX, BLOCK_WIDTH 
+ 05AD  7C EE						JL DRAW_BLOCK_HORIZONTA
+				L3       				
+								; Continue unti
+				l block width complete 
+							 
+ 05AF  59						POP CX                 
+				         				
+								; Restore X to 
+				left edge 
+ 05B0  42						INC DX                 
+				         				
+								; Next Y row 
+ 05B1  8B C2						MOV AX, DX             
+				         				
+								; Calculate cur
+				rent height 
+ 05B3  2B 06 010F R					SUB AX, BLOCK_Y3       
+				         				
+								; Get offset fr
+				om top of block 
+ 05B7  3B 06 00CA R					CMP AX, BLOCK_HEIGHT 
+ 05BB  7C DF						JL DRAW_BLOCK_VERTICAL3
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-50
+
+
+				         				
+								; Continue unti
+				l block height complete 
+							 
+ 05BD  59						POP CX                 
+				         				
+								; Restore block
+				 counter 
+ 05BE  EB 01 90						JMP CONTINUE_BLOCK_LOOP
+				3 
+							 
+ 05C1						NEXT_BLOCK3: 
+				; 		Skip drawing for inactive block
+				s 
+							 
+ 05C1						CONTINUE_BLOCK_LOOP3: 
+ 05C1  83 C6 02						ADD SI, 2              
+				         				
+								; Move to next 
+				X position (2 bytes per word) 
+ 05C4  47						INC DI                 
+				         				
+								; Move to next 
+				active status 
+ 05C5  49						DEC CX                 
+				         				
+								; Decrement blo
+				ck counter 
+ 05C6  EB C2						JMP DRAW_BLOCKS_LOOP3  
+				         				
+								; Process next 
+				block 
+							 
+ 05C8						DRAW_BLOCKS_EXIT3: 
+ 05C8  C3						RET                    
+				         				
+								; Return from p
+				rocedure 
+ 05C9					DRAW_BLOCKS3 ENDP 
+				 
+				; 	Procedure to draw blocks (fourth row) 
+				 
+ 05C9					DRAW_BLOCKS4 PROC NEAR 
+ 05C9  8B 0E 011C R				MOV CX, NUM_BLOCKS4            
+				     					
+							; Initialize block coun
+				ter for row 4 
+ 05CD  BE 011E R				MOV SI, OFFSET BLOCKS_X4       
+				     					
+							; SI points to X positi
+				ons for row 4 
+ 05D0  BF 0135 R				MOV DI, OFFSET BLOCKS_ACTIVE4  
+				     					
+							; DI points to active s
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-51
+
+
+				tatus for row 4 
+						 
+				; 		Loop through all blocks in four
+				th row 
+ 05D3						DRAW_BLOCKS_LOOP4: 
+ 05D3  83 F9 00						CMP CX, 0              
+				         				
+								; Check if all 
+				blocks processed 
+ 05D6  74 39						JE DRAW_BLOCKS_EXIT4   
+				         				
+								; Exit if done 
+							 
+ 05D8  8A 05						MOV AL, [DI]           
+				         				
+								; Get block act
+				ive status 
+ 05DA  3C 00						CMP AL, 0              
+				         				
+								; Check if bloc
+				k is destroyed 
+ 05DC  74 2C						JE NEXT_BLOCK4         
+				         				
+								; Skip if block
+				 is inactive 
+							 
+ 05DE  51						PUSH CX                
+				         				
+								; Save block co
+				unter 
+							 
+				; 			Set coordinates for dra
+				wing 
+ 05DF  8B 0C						MOV CX, [SI]           
+				         				
+								; Load X positi
+				on from array 
+ 05E1  8B 16 0132 R					MOV DX, BLOCK_Y4       
+				         				
+								; Load Y positi
+				on for row 4 
+							 
+ 05E5						DRAW_BLOCK_VERTICAL4: 
+ 05E5  51						PUSH CX                
+				         				
+								; Save X positi
+				on 
+							 
+ 05E6						DRAW_BLOCK_HORIZONTAL4: 
+ 05E6  B4 0C						MOV AH, 0Ch            
+				         				
+								; Function: dra
+				w pixel 
+ 05E8  A0 0134 R					MOV AL, BLOCK_COLOR4   
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-52
+
+
+				         				
+								; Color for fou
+				rth row blocks 
+ 05EB  CD 10						INT 10h                
+				         				
+								; Draw pixel 
+							 
+ 05ED  41						INC CX                 
+				         				
+								; Next X positi
+				on 
+ 05EE  8B C1						MOV AX, CX 
+ 05F0  2B 04						SUB AX, [SI]           
+				         				
+								; Calculate cur
+				rent width 
+ 05F2  3B 06 00C8 R					CMP AX, BLOCK_WIDTH 
+ 05F6  7C EE						JL DRAW_BLOCK_HORIZONTA
+				L4       				
+								; Continue unti
+				l block width complete 
+							 
+ 05F8  59						POP CX                 
+				         				
+								; Restore X to 
+				left edge 
+ 05F9  42						INC DX                 
+				         				
+								; Next Y row 
+ 05FA  8B C2						MOV AX, DX             
+				         				
+								; Calculate cur
+				rent height 
+ 05FC  2B 06 0132 R					SUB AX, BLOCK_Y4       
+				         				
+								; Get offset fr
+				om top of block 
+ 0600  3B 06 00CA R					CMP AX, BLOCK_HEIGHT 
+ 0604  7C DF						JL DRAW_BLOCK_VERTICAL4
+				         				
+								; Continue unti
+				l block height complete 
+							 
+ 0606  59						POP CX                 
+				         				
+								; Restore block
+				 counter 
+ 0607  EB 01 90						JMP CONTINUE_BLOCK_LOOP
+				4 
+							 
+ 060A						NEXT_BLOCK4: 
+				; 		Skip drawing for inactive block
+				s 
+							 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-53
+
+
+ 060A						CONTINUE_BLOCK_LOOP4: 
+ 060A  83 C6 02						ADD SI, 2              
+				         				
+								; Move to next 
+				X position (2 bytes per word) 
+ 060D  47						INC DI                 
+				         				
+								; Move to next 
+				active status 
+ 060E  49						DEC CX                 
+				         				
+								; Decrement blo
+				ck counter 
+ 060F  EB C2						JMP DRAW_BLOCKS_LOOP4  
+				         				
+								; Process next 
+				block 
+							 
+ 0611						DRAW_BLOCKS_EXIT4: 
+ 0611  C3						RET                    
+				         				
+								; Return from p
+				rocedure 
+ 0612					DRAW_BLOCKS4 ENDP 
+				 
+					; Procedure to draw the ball 
+					 
+ 0612					DRAW_BALL PROC NEAR 
+						 
+ 0612  8B 0E 0093 R				MOV CX,BALL_X                  
+				              				
+						; Set starting X position 
+ 0616  8B 16 0095 R				MOV DX,BALL_Y                  
+				              				
+						; Set starting Y position 
+						 
+						 
+ 061A						DRAW_BALL_HORIZONTAL: 
+							 
+ 061A  B4 0C						MOV AH,0Ch             
+				                  			
+							; Function: draw pixel 
+ 061C  B0 0F						MOV AL,0Fh             
+				                  			
+							; Color: white 
+ 061E  B7 00						MOV BH,00h             
+				                  			
+							; Page number: 0 
+ 0620  CD 10						INT 10h                
+				                  			
+							; Draw pixel 
+							 
+ 0622  41						INC CX                 
+				                  			
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-54
+
+
+							; Move to next X positi
+				on 
+ 0623  8B C1						MOV AX,CX              
+				                  			
+							; Calculate current wid
+				th 
+ 0625  2B 06 0093 R					SUB AX,BALL_X 
+ 0629  3B 06 009B R					CMP AX,BALL_SIZE       
+				                  			
+							; Check if reached ball
+				 width 
+ 062D  7E EB						JNG DRAW_BALL_HORIZONTA
+				L                 			
+							; Continue if not compl
+				eted width 
+							 
+ 062F  8B 0E 0093 R					MOV CX,BALL_X          
+				                  			
+							; Reset X to left edge 
+ 0633  42						INC DX                 
+				                  			
+							; Move to next Y row 
+							 
+ 0634  8B C2						MOV AX,DX              
+				                  			
+							; Calculate current hei
+				ght 
+ 0636  2B 06 0095 R					SUB AX,BALL_Y 
+ 063A  3B 06 009B R					CMP AX,BALL_SIZE       
+				                  			
+							; Check if reached ball
+				 height 
+ 063E  7E DA						JNG DRAW_BALL_HORIZONTA
+				L                 			
+							; Continue if not compl
+				eted height 
+						 
+ 0640  C3					RET                            
+				              				
+						; Return from procedure 
+ 0641					DRAW_BALL ENDP 
+					 
+				; 	Procedure to clear the ball's previous 
+				position 
+				 
+ 0641					CLEAR_BALL_AREA PROC NEAR 
+ 0641  50					PUSH AX                        
+				              				
+						; Save registers 
+ 0642  51					PUSH CX 
+ 0643  52					PUSH DX 
+						 
+				; 		Clear the area where ball was p
+				reviously 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-55
+
+
+ 0644  8B 0E 0097 R				MOV CX, OLD_BALL_X             
+				              				
+						; Start at old X position 
+ 0648  8B 16 0099 R				MOV DX, OLD_BALL_Y             
+				              				
+						; Start at old Y position 
+						 
+ 064C						CLEAR_BALL_HORIZONTAL: 
+ 064C  B4 0C						MOV AH, 0Ch            
+				                  			
+							; Function: draw pixel 
+ 064E  B0 00						MOV AL, 00h            
+				                 			
+							; Color: black (erase) 
+ 0650  CD 10						INT 10h                
+				                  			
+							; Draw black pixel 
+							 
+ 0652  41						INC CX                 
+				                  			
+							; Next X position 
+ 0653  8B C1						MOV AX, CX 
+ 0655  2B 06 0097 R					SUB AX, OLD_BALL_X     
+				                  			
+							; Calculate width cover
+				ed 
+ 0659  3B 06 009B R					CMP AX, BALL_SIZE 
+ 065D  7E ED						JNG CLEAR_BALL_HORIZONT
+				AL                			
+							; Continue if not compl
+				ete width 
+							 
+ 065F  8B 0E 0097 R					MOV CX, OLD_BALL_X     
+				                  			
+							; Reset X to left edge 
+ 0663  42						INC DX                 
+				                  			
+							; Next Y row 
+							 
+ 0664  8B C2						MOV AX, DX 
+ 0666  2B 06 0099 R					SUB AX, OLD_BALL_Y     
+				                  			
+							; Calculate height cove
+				red 
+ 066A  3B 06 009B R					CMP AX, BALL_SIZE 
+ 066E  7E DC						JNG CLEAR_BALL_HORIZONT
+				AL                			
+							; Continue if not compl
+				ete height 
+							 
+ 0670  5A					POP DX                         
+				              				
+						; Restore registers 
+ 0671  59					POP CX 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-56
+
+
+ 0672  58					POP AX 
+ 0673  C3					RET                            
+				              				
+						; Return from procedure 
+ 0674					CLEAR_BALL_AREA ENDP 
+					 
+					; Procedure to draw the paddle 
+					 
+ 0674					DRAW_PADDLE PROC NEAR 
+ 0674  8B 0E 00A1 R				MOV CX,PADDLE_X                
+				              				
+						; Set starting X position 
+ 0678  8B 16 00A5 R				MOV DX,PADDLE_Y                
+				              				
+						; Set starting Y position 
+						 
+ 067C						DRAW_PADDLE_HORIZONTAL: 
+ 067C  B4 0C						MOV AH,0Ch             
+				                  			
+							; Function: draw pixel 
+ 067E  B0 0F						MOV AL,0Fh             
+				                  			
+							; Color: white 
+ 0680  B7 00						MOV BH,00h             
+				                  			
+							; Page number: 0 
+ 0682  CD 10						INT 10h                
+				                  			
+							; Draw pixel 
+							 
+ 0684  41						INC CX                 
+				                  			
+							; Move to next X positi
+				on 
+ 0685  8B C1						MOV AX,CX              
+				                  			
+							; Calculate current wid
+				th 
+ 0687  2B 06 00A1 R					SUB AX,PADDLE_X 
+ 068B  3B 06 00A9 R					CMP AX,PADDLE_WIDTH    
+				                  			
+							; Check if reached padd
+				le width 
+ 068F  7E EB						JNG DRAW_PADDLE_HORIZON
+				TAL               			
+							; Continue if not compl
+				ete width 
+							 
+ 0691  8B 0E 00A1 R					MOV CX,PADDLE_X        
+				                  			
+							; Reset X to left edge 
+ 0695  42						INC DX                 
+				                  			
+							; Move to next Y row 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-57
+
+
+							 
+ 0696  8B C2						MOV AX,DX              
+				                  			
+							; Calculate current hei
+				ght 
+ 0698  2B 06 00A5 R					SUB AX,PADDLE_Y 
+ 069C  3B 06 00AB R					CMP AX,PADDLE_HEIGHT   
+				                  			
+							; Check if reached padd
+				le height 
+ 06A0  7E DA						JNG DRAW_PADDLE_HORIZON
+				TAL               			
+							; Continue if not compl
+				ete height 
+ 06A2  C3					RET                            
+				              				
+						; Return from procedure 
+ 06A3					DRAW_PADDLE ENDP 
+						 
+				; Procedure to clear the paddle's previous posi
+				tion 
+				 
+ 06A3					CLEAR_PADDLE_AREA PROC NEAR 
+ 06A3  50					PUSH AX                        
+				              				
+						; Save registers 
+ 06A4  51					PUSH CX 
+ 06A5  52					PUSH DX 
+						 
+				; 		Clear the area where paddle was
+				 previously 
+ 06A6  8B 0E 00A3 R				MOV CX, OLD_PADDLE_X           
+				              				
+						; Start at old X position 
+ 06AA  8B 16 00A5 R				MOV DX, PADDLE_Y               
+				              				
+						; Y position doesn't change 
+						 
+ 06AE						CLEAR_PADDLE_HORIZONTAL: 
+ 06AE  B4 0C						MOV AH, 0Ch            
+				                  			
+							; Function: draw pixel 
+ 06B0  B0 00						MOV AL, 00h            
+				                  			
+							; Color: black (erase) 
+ 06B2  CD 10						INT 10h                
+				                  			
+							; Draw black pixel 
+							 
+ 06B4  41						INC CX                 
+				                  			
+							; Next X position 
+ 06B5  8B C1						MOV AX, CX 
+ 06B7  2B 06 00A3 R					SUB AX, OLD_PADDLE_X   
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-58
+
+
+				                  			
+							; Calculate width cover
+				ed 
+ 06BB  3B 06 00A9 R					CMP AX, PADDLE_WIDTH 
+ 06BF  7E ED						JNG CLEAR_PADDLE_HORIZO
+				NTAL              			
+							; Continue if not compl
+				ete width 
+							 
+ 06C1  8B 0E 00A3 R					MOV CX, OLD_PADDLE_X   
+				                  			
+							; Reset X to left edge 
+ 06C5  42						INC DX                 
+				                  			
+							; Next Y row 
+							 
+ 06C6  8B C2						MOV AX, DX 
+ 06C8  2B 06 00A5 R					SUB AX, PADDLE_Y       
+				                  			
+							; Calculate height cove
+				red 
+ 06CC  3B 06 00AB R					CMP AX, PADDLE_HEIGHT 
+ 06D0  7E DC						JNG CLEAR_PADDLE_HORIZO
+				NTAL              			
+							; Continue if not compl
+				ete height 
+							 
+ 06D2  5A					POP DX                         
+				              				
+						; Restore registers 
+ 06D3  59					POP CX 
+ 06D4  58					POP AX 
+ 06D5  C3					RET                            
+				              				
+						; Return from procedure 
+						 
+ 06D6					CLEAR_PADDLE_AREA ENDP 
+					 
+					; Procedure to draw the user interface 
+				(scoreboard and title) 
+					 
+ 06D6					DRAW_UI PROC NEAR 
+				 
+				; 		Display player lives text 
+ 06D6  B4 02					MOV AH,02h                  
+									
+									; Funct
+				ion: set cursor position 
+ 06D8  B7 00					MOV BH,00h                  
+									
+									; Page 
+				number: 0 
+ 06DA  B6 01					MOV DH,01h                  
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-59
+
+
+									; Row: 
+				1 
+ 06DC  B2 07					MOV DL,07h                  
+									
+									; Colum
+				n: 7 
+ 06DE  CD 10					INT 10h                     
+									
+									; Set c
+				ursor position 
+						 
+ 06E0  B4 09					MOV AH,09h                  
+									
+									; Funct
+				ion: display string 
+ 06E2  8D 16 000C R				LEA DX,TEXT_PLAYER_LIFES    
+									
+									; Load 
+				address of player lives text 
+ 06E6  CD 21					INT 21h                     
+									
+									; Displ
+				ay the string 
+						 
+				; 		Display game title 
+ 06E8  B4 02					MOV AH,02h                  
+									
+									; Funct
+				ion: set cursor position 
+ 06EA  B7 00					MOV BH,00h                  
+									
+									; Page 
+				number: 0 
+ 06EC  B6 01					MOV DH,01h                  
+									
+									; Row: 
+				1 
+ 06EE  B2 18					MOV DL,18h                  
+									
+									; Colum
+				n: 24 
+ 06F0  CD 10					INT 10h                     
+									
+									; Set c
+				ursor position 
+						 
+ 06F2  B4 09					MOV AH,09h                  
+									
+									; Funct
+				ion: display string 
+ 06F4  8D 16 000F R				LEA DX,TEXT_TITLE_GAME      
+									
+									; Load 
+				address of game title text 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-60
+
+
+ 06F8  CD 21					INT 21h                     
+									
+									; Displ
+				ay the string 
+				 
+ 06FA  C3					RET                         
+									
+									; Retur
+				n from procedure 
+ 06FB					DRAW_UI ENDP 
+					 
+					; Procedure to draw decorative paddle i
+				n UI 
+					 
+ 06FB					DRAW_PADDLE_UI PROC NEAR 
+ 06FB  8B 0E 008B R				MOV CX,PADDLE_UI_X             
+				              				
+						; Set starting X position 
+ 06FF  8B 16 008D R				MOV DX,Y_PADDLE_UI             
+				              				
+						; Set starting Y position 
+						 
+ 0703						DRAW_PADDLE_UI_HORIZONTAL: 
+ 0703  B4 0C						MOV AH,0Ch             
+				                  			
+							; Function: draw pixel 
+ 0705  B0 0F						MOV AL,0Fh             
+				                  			
+							; Color: white 
+ 0707  B7 00						MOV BH,00h             
+				                  			
+							; Page number: 0 
+ 0709  CD 10						INT 10h                
+				                  			
+							; Draw pixel 
+							 
+ 070B  41						INC CX                 
+				                  			
+							; Move to next X positi
+				on 
+ 070C  8B C1						MOV AX,CX              
+				                 			
+							; Calculate current wid
+				th 
+ 070E  2B 06 008B R					SUB AX,PADDLE_UI_X 
+ 0712  3B 06 0087 R					CMP AX,PADDLE_UI_WIDTH 
+				                  			
+							; Check if reached padd
+				le width 
+ 0716  7E EB						JNG DRAW_PADDLE_UI_HORI
+				ZONTAL            			
+							; Continue if not compl
+				ete width 
+							 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-61
+
+
+ 0718  8B 0E 008B R					MOV CX,PADDLE_UI_X     
+				                  			
+							; Reset X to left edge 
+ 071C  42						INC DX                 
+				                  			
+							; Move to next Y row 
+							 
+ 071D  8B C2						MOV AX,DX              
+				                  			
+							; Calculate current hei
+				ght 
+ 071F  2B 06 008D R					SUB AX,Y_PADDLE_UI 
+ 0723  3B 06 0089 R					CMP AX,PADDLE_UI_HEIGH 
+				                  			
+							; Check if reached padd
+				le height 
+ 0727  7E DA						JNG DRAW_PADDLE_UI_HORI
+				ZONTAL            			
+							; Continue if not compl
+				ete height 
+				 
+ 0729  C3					RET                            
+				              				
+						; Return from procedure 
+ 072A					DRAW_PADDLE_UI ENDP 
+					 
+				; 	Procedure to update the life counter di
+				splay 
+				 
+ 072A					UPDATE_LIFES PROC NEAR 
+						 
+ 072A  33 C0					XOR AX,AX                   
+									
+									; Clear
+				 AX register 
+ 072C  A0 0086 R				MOV AL,GAME_LIFES           
+									
+									; Load 
+				current lives count into AL 
+						 
+				; 		Convert decimal value to ASCII 
+				character 
+				; 		by adding 30h (48 decimal) 
+				; 		Example: 3 lives -> 3 + 48 = 51
+				 (ASCII for '3') 
+ 072F  04 30					ADD AL,30h                   
+ 0731  A2 000D R				MOV [TEXT_PLAYER_LIFES+1], AL  
+				 					
+								; Update the ch
+				aracter in the lives text 
+									
+									
+									
+								; Assuming TEXT
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-62
+
+
+				_PLAYER_LIFES is a string like "X lives" 
+						 
+ 0734  C3					RET                         
+									
+									; Retur
+				n from procedure 
+ 0735					UPDATE_LIFES ENDP 
+					 
+				; 	Procedure to display game over menu and
+				 handle restart 
+				 
+ 0735					DRAW_GAME_OVER_MENU PROC NEAR 
+				         
+ 0735  E8 086E R				CALL CLEAR_SCREEN              
+				  					
+									; Clear
+				 the entire screen 
+						 
+ 0738						LOOP_SCREEN: 
+				; 			Display "GAME OVER" tit
+				le 
+ 0738  B4 02						MOV AH,02h             
+				          				
+									; Funct
+				ion: set cursor position 
+ 073A  B7 00						MOV BH,00h             
+				          				
+									; Page 
+				number: 0 
+ 073C  B6 09						MOV DH,09h             
+				          				
+									; Row: 
+				9 
+ 073E  B2 0F						MOV DL,0Fh             
+				          				
+									; Colum
+				n: 4 
+ 0740  CD 10						INT 10h                
+				          				
+									; Set c
+				ursor position 
+							 
+ 0742  B4 09						MOV AH,09h             
+				          				
+									; Funct
+				ion: display string 
+ 0744  8D 16 001F R					LEA DX,TEXT_GAME_OVER_T
+				ITLE      				
+									; Load 
+				address of game over title 
+ 0748  CD 21						INT 21h                
+				          				
+									; Displ
+				ay the string 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-63
+
+
+							 
+				; 			Display motivational me
+				ssage 
+ 074A  B4 02						MOV AH,02h             
+				          				
+									; Funct
+				ion: set cursor position 
+ 074C  B7 00						MOV BH,00h             
+				          				
+									; Page 
+				number: 0 
+ 074E  B6 0C						MOV DH,0Ch             
+				          				
+									; Row: 
+				12 
+ 0750  B2 0D						MOV DL,0Dh             
+				          				
+									; Colum
+				n: 13 
+ 0752  CD 10						INT 10h                
+				          				
+									; Set c
+				ursor position 
+							 
+ 0754  B4 09						MOV AH,09h             
+				          				
+									; Funct
+				ion: display string 
+ 0756  8D 16 002A R					LEA DX,TEXT_GAME_OVER_M
+				OTIVATION 				
+									; Load 
+				address of motivation text 
+ 075A  CD 21						INT 21h                
+				          				
+									; Displ
+				ay the string 
+							 
+				; 			Display "Play Again?" m
+				essage 
+ 075C  B4 02						MOV AH,02h             
+				          				
+									; Funct
+				ion: set cursor position 
+ 075E  B7 00						MOV BH,00h             
+				          				
+									; Page 
+				number: 0 
+ 0760  B6 0F						MOV DH,0Fh             
+				          				
+									; Row: 
+				15 
+ 0762  B2 0A						MOV DL,0Ah             
+				          				
+									; Colum
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-64
+
+
+				n: 11 
+ 0764  CD 10						INT 10h                
+				          				
+									; Set c
+				ursor position 
+							 
+ 0766  B4 09						MOV AH,09h             
+				          				
+									; Funct
+				ion: display string 
+ 0768  8D 16 003A R					LEA DX,TEXT_GAME_OVER_P
+				LAY_AGAIN 				
+									; Load 
+				address of play again text 
+ 076C  CD 21						INT 21h                
+				          				
+									; Displ
+				ay the string 
+							 
+				; 			Display "Exit main menu
+				" message 
+ 076E  B4 02						MOV AH,02h             
+				          				
+									; Funct
+				ion: set cursor position 
+ 0770  B7 00						MOV BH,00h             
+				          				
+									; Page 
+				number: 0 
+ 0772  B6 12						MOV DH,12h             
+				          				
+									; Row: 
+				18 
+ 0774  B2 08						MOV DL,08h             
+				          				
+									; Colum
+				n: 8 
+ 0776  CD 10						INT 10h                
+				          				
+									; Set c
+				ursor position 
+							 
+ 0778  B4 09						MOV AH,09h             
+				          				
+									; Funct
+				ion: display string 
+ 077A  8D 16 0050 R					LEA DX,TEXT_GAME_OVER_B
+				ACK_MENU				
+									
+					; Load address of exit main menu 
+ 077E  CD 21						INT 21h                
+				          				
+									; Displ
+				ay the string 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-65
+
+
+							 
+ 0780  B4 00						MOV AH,00h             
+				          				
+									; Funct
+				ion: get keystroke 
+ 0782  CD 16						INT 16h                
+				          				
+									; Wait 
+				for key press 
+							 
+				; 			Check if R or r was pre
+				ssed to restart 
+ 0784  3C 52						CMP AL,'R' 
+ 0786  74 0E						JE RESTAR_GAME 
+ 0788  3C 72						CMP AL,'r' 
+ 078A  74 0A						JE RESTAR_GAME 
+							 
+							 
+				; 			Check if S or s was pre
+				ssed to restart 
+ 078C  3C 4D						CMP AL,'M' 
+ 078E  74 11						JE BACK_MENU 
+ 0790  3C 6D						CMP AL,'m' 
+ 0792  74 0D						JE BACK_MENU 
+						 
+				; 			If we get here, user di
+				dn't press R/r, so return the loop 
+ 0794  EB A2						JMP LOOP_SCREEN 
+						 
+ 0796						RESTAR_GAME: 
+ 0796  C6 06 000A R 01					MOV GAME_ACTIVE, 01h   
+				          				
+									; Set g
+				ame to active state 
+ 079B  E8 07B0 R					CALL RESET_OBJECTS
+									
+									
+							; Reset all objects 
+ 079E  EB 0F 90						JMP END_DRAW_GAME_OVER 
+						 
+ 07A1						BACK_MENU: 
+ 07A1  C6 06 000B R 00					MOV MAIN_MENU,00h 
+ 07A6  C6 06 000A R 01					MOV GAME_ACTIVE,01h 
+ 07AB  E8 07B0 R					CALL RESET_OBJECTS
+									
+									
+							; Reset all objects 
+ 07AE  C3						RET                    
+				          				
+									; Retur
+				n from procedure 
+							 
+ 07AF						END_DRAW_GAME_OVER: 
+ 07AF  C3						RET 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-66
+
+
+ 07B0					DRAW_GAME_OVER_MENU ENDP 
+					 
+				; Procedure for reset all contents 
+				 
+ 07B0					RESET_OBJECTS PROC NEAR 
+ 07B0  C6 06 0000 R 01					MOV FIRST_RUN, 01h     
+				          				
+									; Set f
+				irst run flag 
+							 
+ 07B5  C6 06 013F R 00					MOV POWERUP_PADDLE_ACTI
+				VE, 0     				
+									; Disab
+				le paddle power-up 
+ 07BA  A1 0142 R					MOV AX, PADDLE_NORMAL_W
+				IDTH      				
+									; Get n
+				ormal paddle width 
+ 07BD  A3 00A9 R					MOV PADDLE_WIDTH, AX   
+				         				
+									; Resto
+				re paddle width 
+							 
+				; 			Reset first row blocks 
+				(make all active) 
+ 07C0  B9 000A						MOV CX, 10             
+				          				
+									; Numbe
+				r of blocks in row 
+ 07C3  BF 00CC R					MOV DI, OFFSET BLOCKS_A
+				CTIVE     				
+									; Point
+				 to first block status 
+							 
+ 07C6						RESET_BLOCKS1: 
+ 07C6  C6 05 01						MOV BYTE PTR [DI], 1   
+				          				
+									; Set t
+				o 1 (active) 
+ 07C9  47						INC DI                 
+				          				
+									; Next 
+				block 
+ 07CA  E2 FA						LOOP RESET_BLOCKS1     
+				          				
+									; Repea
+				t for all blocks 
+							 
+				; 			Reset second row blocks
+				 
+ 07CC  B9 000A						MOV CX, 10             
+				          				
+									; Numbe
+				r of blocks in row 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-67
+
+
+ 07CF  BF 00EF R					MOV DI, OFFSET BLOCKS_A
+				CTIVE2    				
+									; Point
+				 to first block status 
+							 
+ 07D2						RESET_BLOCKS2: 
+ 07D2  C6 05 01						MOV BYTE PTR [DI], 1   
+				          				
+									; Set t
+				o 1 (active) 
+ 07D5  47						INC DI                 
+				          				
+									; Next 
+				block 
+ 07D6  E2 FA						LOOP RESET_BLOCKS2     
+				         	 			
+									; Repea
+				t for all blocks 
+							 
+				; 			Reset third row blocks 
+ 07D8  B9 000A						MOV CX, 10             
+				          				
+									; Numbe
+				r of blocks in row 
+ 07DB  BF 0112 R					MOV DI, OFFSET BLOCKS_A
+				CTIVE3    				
+									; Point
+				 to first block status 
+							 
+ 07DE						RESET_BLOCKS3: 
+ 07DE  C6 05 01						MOV BYTE PTR [DI], 1   
+				          				
+									; Set t
+				o 1 (active) 
+ 07E1  47						INC DI                 
+				          				
+									; Next 
+				block 
+ 07E2  E2 FA						LOOP RESET_BLOCKS3     
+				          				
+									; Repea
+				t for all blocks 
+							 
+				; 			Reset fourth row blocks
+				 
+ 07E4  B9 000A						MOV CX, 10             
+				          				
+									; Numbe
+				r of blocks in row 
+ 07E7  BF 0135 R					MOV DI, OFFSET BLOCKS_A
+				CTIVE4    				
+									; Point
+				 to first block status 
+							 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-68
+
+
+ 07EA						RESET_BLOCKS4: 
+ 07EA  C6 05 01						MOV BYTE PTR [DI], 1   
+				         				
+							 		; Set t
+				o 1 (active) 
+ 07ED  47						INC DI                 
+				          				
+									; Next 
+				block 
+ 07EE  E2 FA						LOOP RESET_BLOCKS4     
+				          				
+									; Repea
+				t for all blocks 
+							 
+				; 			Reset paddle position 
+ 07F0  A1 00A7 R					MOV AX, PADDLE_ORIGINAL
+				_X        				
+									; Get o
+				riginal paddle X position 
+ 07F3  A3 00A1 R					MOV PADDLE_X, AX       
+				          				
+									; Reset
+				 paddle X position 
+						 
+ 07F6  C3					RET 
+ 07F7					RESET_OBJECTS ENDP 
+					 
+				; 	Procedure to draw main menu game 
+				 
+ 07F7					MAIN_MENU_UI PROC NEAR 
+						 
+ 07F7  E8 086E R				CALL CLEAR_SCREEN              
+				  					
+									; Clear
+				 the entire screen 
+						 
+ 07FA						MAIN_LOOP_SCREEN: 
+					; 		Display "ARKANOID"  gam
+				e title 
+ 07FA  B4 02						MOV AH,02h             
+				          				
+									; Funct
+				ion: set cursor position 
+ 07FC  B7 00						MOV BH,00h             
+				          				
+									; Page 
+				number: 0 
+ 07FE  B6 0A						MOV DH,0Ah             
+				          				
+									; Row: 
+				10 
+ 0800  B2 0F						MOV DL,0Fh             
+				          				
+									; Colum
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-69
+
+
+				n: 15 
+ 0802  CD 10						INT 10h                
+				          				
+									; Set c
+				ursor position 
+							 
+ 0804  B4 09						MOV AH,09h             
+				          				
+									; Funct
+				ion: display string 
+ 0806  8D 16 006A R					LEA DX,TEXT_MAIN_MENU_T
+				ITLE_GAME     				
+								; Load address 
+				of game over title 
+ 080A  CD 21						INT 21h                
+				          				
+									; Displ
+				ay the string 
+							 
+					; 		Display 'START GAME' op
+				tion 
+ 080C  B4 02						MOV AH,02h             
+				          				
+									; Funct
+				ion: set cursor position 
+ 080E  B7 00						MOV BH,00h             
+				          				
+									; Page 
+				number: 0 
+ 0810  B6 0E						MOV DH,0Eh             
+				          				
+									; Row: 
+				14 
+ 0812  B2 0A						MOV DL,0Ah             
+				          				
+									; Colum
+				n: 10 
+ 0814  CD 10						INT 10h                
+				          				
+									; Set c
+				ursor position 
+							 
+ 0816  B4 09						MOV AH,09h             
+				          				
+									; Funct
+				ion: display string 
+ 0818  8D 16 0073 R					LEA DX,TEXT_MAIN_MENU_T
+				ITLE_START 				
+									; Load 
+				address of motivation text 
+ 081C  CD 21						INT 21h                
+				          				
+									; Displ
+				ay the string 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-70
+
+
+							 
+ 081E  B4 00						MOV AH,00h             
+				          				
+									; Funct
+				ion: get keystroke 
+ 0820  CD 16						INT 16h                
+				          				
+									; Wait 
+				for key press 
+							 
+				; 			Check if 's' or 's' was
+				 pressed to restart 
+ 0822  3C 53						CMP AL,'S' 
+ 0824  74 06						JE START_GAME 
+ 0826  3C 73						CMP AL,'s' 
+ 0828  74 02						JE START_GAME 
+						 
+				; 			If we get here, user di
+				dn't press S/s, so return the loop 
+ 082A  EB CE						JMP MAIN_LOOP_SCREEN 
+							 
+ 082C							START_GAME: 
+ 082C  C6 06 000B R 01						MOV MAIN_MENU, 
+				01h             			
+									
+					; Active the game 
+						 
+ 0831  C3					RET 
+ 0832					MAIN_MENU_UI ENDP 
+					 
+				; 	Procedure to activate the expanded padd
+				le power-up 
+				 
+ 0832					ACTIVATE_PADDLE_POWERUP PROC NEAR 
+					 
+				; 		Check if power-up is already ac
+				tive 
+ 0832  80 3E 013F R 01				CMP POWERUP_PADDLE_ACTIVE, 1 
+ 0837  74 0B					JE RESET_TIMER_ONLY           
+									
+									
+					; If already active, just reset the tim
+				er 
+						 
+				; 		Save current width as "normal" 
+				width 
+ 0839  A1 00A9 R				MOV AX, PADDLE_WIDTH 
+ 083C  A3 0142 R				MOV PADDLE_NORMAL_WIDTH, AX 
+						 
+				; 		Expand paddle width (double it)
+				 
+ 083F  D1 E0					SHL AX, 1                     
+									
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-71
+
+
+					; Multiply by 2 (AX = AX * 2) 
+ 0841  A3 00A9 R				MOV PADDLE_WIDTH, AX 
+						 
+ 0844					RESET_TIMER_ONLY: 
+				; 		Set active flag and reset timer
+				 
+ 0844  C6 06 013F R 01				MOV POWERUP_PADDLE_ACTIVE, 1 
+ 0849  C7 06 0140 R 005A			MOV POWERUP_PADDLE_TIMER, 90  
+									
+									
+					; Set timer value (approx. 5 seconds) 
+						 
+ 084F  C3					RET 
+ 0850					ACTIVATE_PADDLE_POWERUP ENDP 
+					 
+				; Procedure to check the power-up timer status 
+				 
+ 0850					CHECK_POWERUP_TIMER PROC NEAR 
+				; 		Check if power-up is active 
+ 0850  80 3E 013F R 00				CMP POWERUP_PADDLE_ACTIVE, 0 
+ 0855  74 16					JE EXIT_CHECK_TIMER          
+									
+						 			
+					; If not active, exit procedure 
+						 
+				; 		Decrement timer counter 
+ 0857  FF 0E 0140 R				DEC POWERUP_PADDLE_TIMER 
+						 
+				; 		Check if timer reached zero 
+ 085B  83 3E 0140 R 00				CMP POWERUP_PADDLE_TIMER, 0 
+ 0860  7F 0B					JG EXIT_CHECK_TIMER           
+									
+									
+					; If still greater than zero, exit 
+						 
+				; 		Timer reached zero, deactivate 
+				power-up 
+ 0862  C6 06 013F R 00				MOV POWERUP_PADDLE_ACTIVE, 0 
+						 
+				; 		Restore original paddle width 
+ 0867  A1 0142 R				MOV AX, PADDLE_NORMAL_WIDTH 
+ 086A  A3 00A9 R				MOV PADDLE_WIDTH, AX 
+						 
+ 086D					EXIT_CHECK_TIMER: 
+ 086D  C3					RET 
+						 
+ 086E					CHECK_POWERUP_TIMER ENDP 
+				 
+				; Procedure to clear the screen 
+				 
+ 086E					CLEAR_SCREEN PROC NEAR 
+ 086E  B4 00					MOV AH,00h                
+									
+									
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Page     1-72
+
+
+						; Set video mode function 
+ 0870  B0 13					MOV AL,13h                
+									
+									
+						; Select video mode 13h (320x20
+				0, 256 colors) 
+ 0872  CD 10					INT 10h                   
+									
+									
+						; Call video BIOS service 
+						 
+ 0874  B4 0B					MOV AH,0Bh                
+									
+									
+						; Set color palette function 
+ 0876  B7 00					MOV BH,00h                
+									
+									
+						; Select background color 
+ 0878  B3 00					MOV BL,00h                
+									
+									
+						; Set background to black 
+ 087A  CD 10					INT 10h                   
+									
+									
+						; Call video BIOS service 
+						 
+ 087C  C3					RET 
+ 087D					CLEAR_SCREEN ENDP 
+					 
+					 
+ 087D				CODE ENDS 
+				END 
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	087D	PARA	NONE	'CODE'
+DATA . . . . . . . . . . . . . .  	014C	PARA	NONE	'DATA'
+STACK  . . . . . . . . . . . . .  	0040	PARA	STACK	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ACTIVATE_PADDLE_POWERUP  . . . .  	N PROC	0832	CODE	Length = 001E
+
+BACK_MENU  . . . . . . . . . . .  	L NEAR	07A1	CODE
+BALL_ORIGINAL_X  . . . . . . . .  	L WORD	008F	DATA
+BALL_ORIGINAL_Y  . . . . . . . .  	L WORD	0091	DATA
+BALL_SIZE  . . . . . . . . . . .  	L WORD	009B	DATA
+BALL_VELOCITY_X  . . . . . . . .  	L WORD	009D	DATA
+BALL_VELOCITY_Y  . . . . . . . .  	L WORD	009F	DATA
+BALL_X . . . . . . . . . . . . .  	L WORD	0093	DATA
+BALL_Y . . . . . . . . . . . . .  	L WORD	0095	DATA
+BEEP_FREQ_HIGH . . . . . . . . .  	L WORD	0146	DATA
+BEEP_FREQ_LOW  . . . . . . . . .  	L WORD	0148	DATA
+BEEP_FREQ_MED  . . . . . . . . .  	L WORD	014A	DATA
+BLOCKS_ACTIVE  . . . . . . . . .  	L BYTE	00CC	DATA	Length = 000A
+BLOCKS_ACTIVE2 . . . . . . . . .  	L BYTE	00EF	DATA	Length = 000A
+BLOCKS_ACTIVE3 . . . . . . . . .  	L BYTE	0112	DATA	Length = 000A
+BLOCKS_ACTIVE4 . . . . . . . . .  	L BYTE	0135	DATA	Length = 000A
+BLOCKS_X . . . . . . . . . . . .  	L WORD	00B1	DATA
+BLOCKS_X2  . . . . . . . . . . .  	L WORD	00D8	DATA
+BLOCKS_X3  . . . . . . . . . . .  	L WORD	00FB	DATA
+BLOCKS_X4  . . . . . . . . . . .  	L WORD	011E	DATA
+BLOCK_COLLISION_FOUND  . . . . .  	L NEAR	03D2	CODE
+BLOCK_COLOR  . . . . . . . . . .  	L BYTE	00C7	DATA
+BLOCK_COLOR2 . . . . . . . . . .  	L BYTE	00EE	DATA
+BLOCK_COLOR3 . . . . . . . . . .  	L BYTE	0111	DATA
+BLOCK_COLOR4 . . . . . . . . . .  	L BYTE	0134	DATA
+BLOCK_HEIGHT . . . . . . . . . .  	L WORD	00CA	DATA
+BLOCK_NOT_ACTIVE . . . . . . . .  	L NEAR	010A	CODE
+BLOCK_NOT_ACTIVE2  . . . . . . .  	L NEAR	01B7	CODE
+BLOCK_NOT_ACTIVE3  . . . . . . .  	L NEAR	024B	CODE
+BLOCK_NOT_ACTIVE4  . . . . . . .  	L NEAR	02D8	CODE
+BLOCK_WIDTH  . . . . . . . . . .  	L WORD	00C8	DATA
+BLOCK_Y  . . . . . . . . . . . .  	L WORD	00C5	DATA
+BLOCK_Y2 . . . . . . . . . . . .  	L WORD	00EC	DATA
+BLOCK_Y3 . . . . . . . . . . . .  	L WORD	010F	DATA
+BLOCK_Y4 . . . . . . . . . . . .  	L WORD	0132	DATA
+
+CHECK_BLOCKS . . . . . . . . . .  	L NEAR	03AD	CODE
+CHECK_BLOCK_COLLISION  . . . . .  	N PROC	007F	CODE	Length = 0099
+CHECK_BLOCK_COLLISION2 . . . . .  	N PROC	0118	CODE	Length = 00B0
+CHECK_BLOCK_COLLISION3 . . . . .  	N PROC	01C8	CODE	Length = 008D
+CHECK_BLOCK_COLLISION4 . . . . .  	N PROC	0255	CODE	Length = 008D
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Symbols-2
+
+
+CHECK_BOTTOM_BORDER  . . . . . .  	L NEAR	0376	CODE
+CHECK_NEXT_BLOCK . . . . . . . .  	L NEAR	008F	CODE
+CHECK_NEXT_BLOCK2  . . . . . . .  	L NEAR	0128	CODE
+CHECK_NEXT_BLOCK3  . . . . . . .  	L NEAR	01D8	CODE
+CHECK_NEXT_BLOCK4  . . . . . . .  	L NEAR	0265	CODE
+CHECK_PADDLE . . . . . . . . . .  	L NEAR	03D8	CODE
+CHECK_POWERUP_TIMER  . . . . . .  	N PROC	0850	CODE	Length = 001E
+CHECK_RIGHT_BORDER . . . . . . .  	L NEAR	0329	CODE
+CHECK_TIME . . . . . . . . . . .  	L NEAR	000B	CODE
+CHECK_VERTICAL . . . . . . . . .  	L NEAR	0349	CODE
+CLEAR_BALL_AREA  . . . . . . . .  	N PROC	0641	CODE	Length = 0033
+CLEAR_BALL_HORIZONTAL  . . . . .  	L NEAR	064C	CODE
+CLEAR_BLOCK1_HORIZONTAL  . . . .  	L NEAR	00DD	CODE
+CLEAR_BLOCK1_VERTICAL  . . . . .  	L NEAR	00DC	CODE
+CLEAR_BLOCK2_HORIZONTAL  . . . .  	L NEAR	0179	CODE
+CLEAR_BLOCK2_VERTICAL  . . . . .  	L NEAR	0178	CODE
+CLEAR_BLOCK3_HORIZONTAL  . . . .  	L NEAR	021E	CODE
+CLEAR_BLOCK3_VERTICAL  . . . . .  	L NEAR	021D	CODE
+CLEAR_BLOCK4_HORIZONTAL  . . . .  	L NEAR	02AB	CODE
+CLEAR_BLOCK4_VERTICAL  . . . . .  	L NEAR	02AA	CODE
+CLEAR_PADDLE_AREA  . . . . . . .  	N PROC	06A3	CODE	Length = 0033
+CLEAR_PADDLE_HORIZONTAL  . . . .  	L NEAR	06AE	CODE
+CLEAR_SCREEN . . . . . . . . . .  	N PROC	086E	CODE	Length = 000F
+CONTINUE . . . . . . . . . . . .  	L NEAR	0358	CODE
+CONTINUE_BLOCK_LOOP  . . . . . .  	L NEAR	052D	CODE
+CONTINUE_BLOCK_LOOP2 . . . . . .  	L NEAR	0578	CODE
+CONTINUE_BLOCK_LOOP3 . . . . . .  	L NEAR	05C1	CODE
+CONTINUE_BLOCK_LOOP4 . . . . . .  	L NEAR	060A	CODE
+CONTINUE_CHECK . . . . . . . . .  	L NEAR	03E0	CODE
+CONTINUE_FLOW2 . . . . . . . . .  	L NEAR	0131	CODE
+
+DECREMENT_LIFES  . . . . . . . .  	L NEAR	0387	CODE
+DRAW_BALL  . . . . . . . . . . .  	N PROC	0612	CODE	Length = 002F
+DRAW_BALL_HORIZONTAL . . . . . .  	L NEAR	061A	CODE
+DRAW_BLOCKS  . . . . . . . . . .  	N PROC	04EB	CODE	Length = 004A
+DRAW_BLOCKS2 . . . . . . . . . .  	N PROC	0535	CODE	Length = 004B
+DRAW_BLOCKS3 . . . . . . . . . .  	N PROC	0580	CODE	Length = 0049
+DRAW_BLOCKS4 . . . . . . . . . .  	N PROC	05C9	CODE	Length = 0049
+DRAW_BLOCKS_EXIT . . . . . . . .  	L NEAR	0534	CODE
+DRAW_BLOCKS_EXIT2  . . . . . . .  	L NEAR	057F	CODE
+DRAW_BLOCKS_EXIT3  . . . . . . .  	L NEAR	05C8	CODE
+DRAW_BLOCKS_EXIT4  . . . . . . .  	L NEAR	0611	CODE
+DRAW_BLOCKS_LOOP . . . . . . . .  	L NEAR	04F5	CODE
+DRAW_BLOCKS_LOOP2  . . . . . . .  	L NEAR	053F	CODE
+DRAW_BLOCKS_LOOP3  . . . . . . .  	L NEAR	058A	CODE
+DRAW_BLOCKS_LOOP4  . . . . . . .  	L NEAR	05D3	CODE
+DRAW_BLOCK_HORIZONTAL  . . . . .  	L NEAR	0508	CODE
+DRAW_BLOCK_HORIZONTAL2 . . . . .  	L NEAR	0552	CODE
+DRAW_BLOCK_HORIZONTAL3 . . . . .  	L NEAR	059D	CODE
+DRAW_BLOCK_HORIZONTAL4 . . . . .  	L NEAR	05E6	CODE
+DRAW_BLOCK_VERTICAL  . . . . . .  	L NEAR	0507	CODE
+DRAW_BLOCK_VERTICAL2 . . . . . .  	L NEAR	0551	CODE
+DRAW_BLOCK_VERTICAL3 . . . . . .  	L NEAR	059C	CODE
+DRAW_BLOCK_VERTICAL4 . . . . . .  	L NEAR	05E5	CODE
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Symbols-3
+
+
+DRAW_GAME_OVER_MENU  . . . . . .  	N PROC	0735	CODE	Length = 007B
+DRAW_MOVING_OBJECTS  . . . . . .  	L NEAR	0069	CODE
+DRAW_PADDLE  . . . . . . . . . .  	N PROC	0674	CODE	Length = 002F
+DRAW_PADDLE_HORIZONTAL . . . . .  	L NEAR	067C	CODE
+DRAW_PADDLE_UI . . . . . . . . .  	N PROC	06FB	CODE	Length = 002F
+DRAW_PADDLE_UI_HORIZONTAL  . . .  	L NEAR	0703	CODE
+DRAW_UI  . . . . . . . . . . . .  	N PROC	06D6	CODE	Length = 0025
+
+END_DRAW_GAME_OVER . . . . . . .  	L NEAR	07AF	CODE
+EXIT_BLOCK_CHECK . . . . . . . .  	L NEAR	0114	CODE
+EXIT_BLOCK_CHECK2  . . . . . . .  	L NEAR	01C4	CODE
+EXIT_BLOCK_CHECK3  . . . . . . .  	L NEAR	0251	CODE
+EXIT_BLOCK_CHECK4  . . . . . . .  	L NEAR	02DE	CODE
+EXIT_BLOCK_LOOP  . . . . . . . .  	L NEAR	0114	CODE
+EXIT_CHECK_TIMER . . . . . . . .  	L NEAR	086D	CODE
+EXIT_MOVE_BALL . . . . . . . . .  	L NEAR	0460	CODE
+EXIT_PADDLE_MOVEMENT . . . . . .  	L NEAR	04CA	CODE
+
+FIRST_RUN  . . . . . . . . . . .  	L BYTE	0000	DATA
+FIX_MOVE_PADDLE_LEFT . . . . . .  	L NEAR	0494	CODE
+FIX_MOVE_PADDLE_RIGHT  . . . . .  	L NEAR	04BA	CODE
+
+GAME_ACTIVE  . . . . . . . . . .  	L BYTE	000A	DATA
+GAME_LIFES . . . . . . . . . . .  	L BYTE	0086	DATA
+GAME_OVER  . . . . . . . . . . .  	L NEAR	039F	CODE
+
+JUMP_BLOCK_NOT_ACTIVE2 . . . . .  	L NEAR	012E	CODE
+
+LEFT . . . . . . . . . . . . . .  	L NEAR	044E	CODE
+LOOP_SCREEN  . . . . . . . . . .  	L NEAR	0738	CODE
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 007F
+MAIN_LOOP_SCREEN . . . . . . . .  	L NEAR	07FA	CODE
+MAIN_MENU  . . . . . . . . . . .  	L BYTE	000B	DATA
+MAIN_MENU_UI . . . . . . . . . .  	N PROC	07F7	CODE	Length = 003B
+MOVE_BALL  . . . . . . . . . . .  	N PROC	0301	CODE	Length = 0160
+MOVE_PADDLE  . . . . . . . . . .  	N PROC	0461	CODE	Length = 006D
+MOVE_PADDLE_LEFT . . . . . . . .  	L NEAR	0481	CODE
+MOVE_PADDLE_RIGHT  . . . . . . .  	L NEAR	049D	CODE
+
+NEXT_BLOCK . . . . . . . . . . .  	L NEAR	052D	CODE
+NEXT_BLOCK2  . . . . . . . . . .  	L NEAR	0578	CODE
+NEXT_BLOCK3  . . . . . . . . . .  	L NEAR	05C1	CODE
+NEXT_BLOCK4  . . . . . . . . . .  	L NEAR	060A	CODE
+NORMAL_CYCLE . . . . . . . . . .  	L NEAR	0048	CODE
+NUM_BLOCKS . . . . . . . . . . .  	L WORD	00AF	DATA
+NUM_BLOCKS2  . . . . . . . . . .  	L WORD	00D6	DATA
+NUM_BLOCKS3  . . . . . . . . . .  	L WORD	00F9	DATA
+NUM_BLOCKS4  . . . . . . . . . .  	L WORD	011C	DATA
+
+OLD_BALL_X . . . . . . . . . . .  	L WORD	0097	DATA
+OLD_BALL_Y . . . . . . . . . . .  	L WORD	0099	DATA
+OLD_PADDLE_X . . . . . . . . . .  	L WORD	00A3	DATA
+
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Symbols-4
+
+
+PADDLE_HEIGHT  . . . . . . . . .  	L WORD	00AB	DATA
+PADDLE_NORMAL_WIDTH  . . . . . .  	L WORD	0142	DATA
+PADDLE_ORIGINAL_X  . . . . . . .  	L WORD	00A7	DATA
+PADDLE_UI_HEIGH  . . . . . . . .  	L WORD	0089	DATA
+PADDLE_UI_WIDTH  . . . . . . . .  	L WORD	0087	DATA
+PADDLE_UI_X  . . . . . . . . . .  	L WORD	008B	DATA
+PADDLE_VELOCITY  . . . . . . . .  	L WORD	00AD	DATA
+PADDLE_WIDTH . . . . . . . . . .  	L WORD	00A9	DATA
+PADDLE_X . . . . . . . . . . . .  	L WORD	00A1	DATA
+PADDLE_Y . . . . . . . . . . . .  	L WORD	00A5	DATA
+PLAY_SOUND . . . . . . . . . . .  	N PROC	02E2	CODE	Length = 001F
+POWERUP_PADDLE_ACTIVE  . . . . .  	L BYTE	013F	DATA
+POWERUP_PADDLE_TIMER . . . . . .  	L WORD	0140	DATA
+
+RESET_BALL_POSITION  . . . . . .  	N PROC	04CE	CODE	Length = 001D
+RESET_BLOCKS1  . . . . . . . . .  	L NEAR	07C6	CODE
+RESET_BLOCKS2  . . . . . . . . .  	L NEAR	07D2	CODE
+RESET_BLOCKS3  . . . . . . . . .  	L NEAR	07DE	CODE
+RESET_BLOCKS4  . . . . . . . . .  	L NEAR	07EA	CODE
+RESET_OBJECTS  . . . . . . . . .  	N PROC	07B0	CODE	Length = 0047
+RESET_TIMER_ONLY . . . . . . . .  	L NEAR	0844	CODE
+RESTAR_GAME  . . . . . . . . . .  	L NEAR	0796	CODE
+RIGHT  . . . . . . . . . . . . .  	L NEAR	0459	CODE
+
+SHOW_GAME_OVER_MENU  . . . . . .  	L NEAR	0074	CODE
+SHOW_MAIN_MENU_GAME  . . . . . .  	L NEAR	0079	CODE
+SKIP_EXPAND_PADDLE . . . . . . .  	L NEAR	01B0	CODE
+SOUND_DURATION . . . . . . . . .  	L WORD	0144	DATA
+START_GAME . . . . . . . . . . .  	L NEAR	082C	CODE
+
+TEXT_GAME_OVER_BACK_MENU . . . .  	L BYTE	0050	DATA
+TEXT_GAME_OVER_MOTIVATION  . . .  	L BYTE	002A	DATA
+TEXT_GAME_OVER_PLAY_AGAIN  . . .  	L BYTE	003A	DATA
+TEXT_GAME_OVER_TITLE . . . . . .  	L BYTE	001F	DATA
+TEXT_MAIN_MENU_TITLE_GAME  . . .  	L BYTE	006A	DATA
+TEXT_MAIN_MENU_TITLE_START . . .  	L BYTE	0073	DATA
+TEXT_PLAYER_LIFES  . . . . . . .  	L BYTE	000C	DATA
+TEXT_TITLE_GAME  . . . . . . . .  	L BYTE	000F	DATA
+TIME_AUX . . . . . . . . . . . .  	L BYTE	0009	DATA
+
+UPDATE_LIFES . . . . . . . . . .  	N PROC	072A	CODE	Length = 000B
+
+WINDOW_BOUNDS  . . . . . . . . .  	L WORD	0005	DATA
+WINDOW_BOUND_TOP . . . . . . . .  	L WORD	0007	DATA
+WINDOW_HEIGHT  . . . . . . . . .  	L WORD	0003	DATA
+WINDOW_WIDTH . . . . . . . . . .  	L WORD	0001	DATA
+
+Y_PADDLE_UI  . . . . . . . . . .  	L WORD	008D	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  ARKANOID		
+
+Microsoft (R) Macro Assembler Version 5.00                  6/9/25 03:09:46
+                                                             Symbols-5
+
+
+
+   1709 Source  Lines
+   1709 Total   Lines
+    185 Symbols
+
+  51116 + 416276 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
