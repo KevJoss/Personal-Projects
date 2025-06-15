@@ -1,0 +1,38 @@
+// Ring parameters
+real r1 = 3.5; // Inner radius
+real r2 = 5;   // Outer radius
+
+// Angular discretization (number of points for the mesh)
+int ntheta = 50;
+
+// Domain boundaries (inner in counterclockwise direction)
+// Polar coordinates are used instead of parametric representation
+
+border inner(t=0, 2*pi){ x = r1*cos(t); y = r1*sin(t); label=1; } // inner border, label 1
+border outer(t=0, 2*pi){ x = r2*cos(t); y = r2*sin(t); label=2; } // outer border, label 2
+
+// Create the mesh of the ring using the defined borders
+mesh Th = buildmesh(outer(ntheta) + inner(-ntheta));
+
+// Visualize the triangular mesh
+//plot(Th, wait=false, cmm="Triangular mesh of the ring", fill=false, boundary=true, value=true, dim=3);
+
+// Function space | approximates the solution on each triangle of the mesh
+fespace Vh(Th, P1);
+Vh u, v;
+
+// Laplace problem (u = 0 on the boundaries) | this defines the weak form to solve
+problem Poisson(u, v) = 
+    int2d(Th)(dx(u)*dx(v) + dy(u)*dy(v))
+  + on(1, u=0)
+  + on(2, u=0);
+
+Poisson; // Solve the system
+
+for (int i = 0; i < u.n; i++) {
+    cout << "Node " << i << ": u = " << u[][i] << endl;
+}
+
+// 3D visualization of the solution
+plot(u, wait=true, cmm="Solution u in 3D", fill=true, value=true, dim=3, nbiso=20);
+

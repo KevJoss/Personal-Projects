@@ -1,0 +1,21 @@
+real d=0.5;
+border bott(t=0,1) {x=t;y=-(t-0.5)^2+0.25;}
+border right(t=d,0){x=t;y=(1/d)*t;}
+border left(t=1,d) {x=t;y=(1/(d-1))*(t-1);}
+int n=100;
+mesh Th= buildmesh(bott(n)+right(n)+left(n));
+
+// Espacio de funciones
+fespace Vh(Th, P1); // Espacio con elementos finitos lineales
+Vh u, v;           // u es la solución; v es la función de prueba
+
+// Definimos el problema de Laplace
+problem Laplace(u, v) = 
+    int2d(Th)(dx(u)*dx(v) + dy(u)*dy(v)) // Término del Laplaciano
+  + on(1, 2, 3, u=0);                   // Condición de contorno: u = 0 en todos los bordes
+
+// Resolvemos el problema
+Laplace;
+
+// Visualizamos la solución
+plot(u, value=true, fill=true, wait=true, dim=3, cmm="Solucion de Laplace en 3D");

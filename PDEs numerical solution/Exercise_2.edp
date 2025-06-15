@@ -1,0 +1,49 @@
+// Coordinates of the points (E1,...,E5,E8,E7,E6)
+real[int] Px = [0,   0, 2, 3, 3, 2, 2, 0];    // x
+real[int] Py = [2.5, 3, 3, 3, 0, 0, 2, 2];    // y
+
+// Counterclockwise edges
+border b1(t=0,1){ x = Px[1]*(1-t)+Px[0]*t; y = Py[1]*(1-t)+Py[0]*t; label=1; } // E2 → E1
+border b2(t=0,1){ x = Px[2]*(1-t)+Px[1]*t; y = Py[2]*(1-t)+Py[1]*t; label=2; } // E3 → E2
+border b3(t=0,1){ x = Px[3]*(1-t)+Px[2]*t; y = Py[3]*(1-t)+Py[2]*t; label=3; } // E4 → E3
+border b4(t=0,1){ x = Px[4]*(1-t)+Px[3]*t; y = Py[4]*(1-t)+Py[3]*t; label=4; } // E5 → E4
+border b5(t=0,1){ x = Px[5]*(1-t)+Px[4]*t; y = Py[5]*(1-t)+Py[4]*t; label=5; } // E8 → E5
+border b6(t=0,1){ x = Px[6]*(1-t)+Px[5]*t; y = Py[6]*(1-t)+Py[5]*t; label=6; } // E7 → E8
+border b7(t=0,1){ x = Px[7]*(1-t)+Px[6]*t; y = Py[7]*(1-t)+Py[6]*t; label=7; } // E6 → E7
+border b8(t=0,1){ x = Px[0]*(1-t)+Px[7]*t; y = Py[0]*(1-t)+Py[7]*t; label=8; } // E1 → E6
+
+
+// Internal lines of the figure
+border l1(t=0,1){ x = Px[0]*(1-t)+Px[6]*t; 
+				  y = Py[0]*(1-t)+Py[6]*t; label=9; } // E1 to E7
+border l2(t=0,1){ x = Px[0]*(1-t)+Px[2]*t; 
+				  y = Py[0]*(1-t)+Py[2]*t; label=10; } // E1 to E3
+border l3(t=0,1){ x = Px[2]*(1-t)+Px[6]*t; 
+				  y = Py[2]*(1-t)+Py[6]*t; label=11; } // E3 to E7			  
+border l4(t=0,1){ x = Px[6]*(1-t)+Px[3]*t; 
+				  y = Py[6]*(1-t)+Py[3]*t; label=12; } // E7 to E4			  
+border l5(t=0,1){ x = Px[6]*(1-t)+Px[4]*t; 
+				  y = Py[6]*(1-t)+Py[4]*t; label=13; } // E7 to E5			  
+				  
+//plot(b1(1)+b2(1)+b3(1)+b4(1)+b5(1)+b6(1)+b7(1)+b8(1)+l1(1)+l2(1)+l3(1)+l4(1)+l5(1), wait=true, cmm="bordes");
+
+mesh Figura = buildmesh(b1(1)+b2(1)+b3(1)+b4(1)+b5(1)+b6(1)+b7(1)+b8(1)+l1(1)+l2(1)+l3(1)+l5(1));
+//plot(Figura, wait=false, cmm="bordes");
+
+
+
+// Poisson space and solution
+fespace Vh(Figura, P1);
+Vh u, v;
+func f = 0;
+
+problem poisson(u, v) =
+    int2d(Figura)(dx(u)*dx(v) + dy(u)*dy(v))
+  - int2d(Figura)(f*v)
+  + on(1,2,3,4,5,6,7,8, u=0);
+
+
+poisson;
+
+//plot(u, value=true, fill=true, wait=true, cmm="Solucion u");
+plot(b1(1)+b2(1)+b3(1)+b4(1)+b5(1)+b6(1)+b7(1)+b8(1)+l1(1)+l2(1)+l3(1)+l4(1)+l5(1), u, value=true, fill=true, wait=true, cmm="Malla y Solucion u");

@@ -1,0 +1,55 @@
+// -------------------------------------------------------------
+// Poisson Equation on a Non-Standard Domain
+// ∆u = 0 with u = 0 on the boundary (Dirichlet condition)
+// Discretization provided by the user (Figure 2 in the prompt)
+// -------------------------------------------------------------
+
+// Cargar el módulo necesario para guardar en VTK
+load "iovtk"
+
+// Step 1: Define the vertices of the domain
+// The vertices are defined in counterclockwise order
+real l = 1.0; // Length of the unit square
+
+// Define the borders of the region
+border E1(t=0, l) { x = t; y = 0; label = 1; }       // Bottom horizontal edge (CCW)
+border E5(t=0, l) { x = l + t; y = 0; label = 5; }   // Lower horizontal extension (CCW)
+border E6(t=0, l) { x = 2*l; y = t; label = 6; }     // Vertical connecting edge (CCW)
+border E3(t=0, 2*l) { x = 3*l - t; y = l; label = 3; } // Top horizontal edge (CCW)
+border E2(t=0, l) { x = l; y = t; label = 2; }       // Right vertical edge (CCW)
+border E4(t=0, l) { x = 0; y = l - t; label = 4; }   // Left vertical edge (CCW)
+
+// Step 2: Generate the mesh for the region
+// Ensure all borders are included and form a closed loop
+mesh Th = buildmesh(E1(20) + E5(20) + E6(20) + E3(40) + E2(20) + E4(20)); 
+
+// Visualize the generated mesh
+plot(Th, wait=true, cmm="Mesh of the non-standard domain");
+
+// Step 3: Define the finite element space
+fespace Vh(Th, P1); // P1 elements (linear basis functions)
+Vh u, v; // u is the solution, v is the test function
+
+// Step 4: Define the source term for the equation (zero for Laplace equation)
+func f = 0; // Zero right-hand side
+
+// Step 5: Define the variational problem
+problem Poisson(u, v) = 
+    int2d(Th)(dx(u)*dx(v) + dy(u)*dy(v)) // Bilinear form
+  - int2d(Th)(f*v)                      // Linear form
+  + on(1, 2, 3, 4, 5, 6, u=0);         // Dirichlet boundary conditions: u = 0 on all edges
+
+// Step 6: Solve the problem
+Poisson; // Simply call the problem name to solve it
+
+// Step 7: Visualize the solution
+plot(u, value=true, fill=true, wait=true, cmm="Solution u on the non-standard domain");
+
+// Step 8: Save the mesh and solution in compatible formats
+savemesh(Th, "non_standard_domain_mesh.msh"); // Save the mesh
+{
+    ofstream fout("solution_non_standard_domain.txt"); // Open file to save solution
+    for (int i = 0; i < u[].n; i++) {
+        fout << u[](i) << endl; // Write solution values to the file
+    }
+}

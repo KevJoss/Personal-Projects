@@ -1,0 +1,53 @@
+// -------------------------------------------------------------
+// Poisson Equation on a True Annular Domain (hole inside)
+// ∆u = 0 with u = 0 on inner and outer circular boundaries
+// -------------------------------------------------------------
+// Ensure VTK output support
+load "iovtk"
+
+// Step 1: Define radii for the inner and outer circles
+real R1 = 3.5; // Inner radius (hole)
+real R2 = 5.0; // Outer radius
+int n = 60;    // Number of points for each border
+
+// Step 2: Define the borders of the domain
+// Orientation: Inner clockwise (CW), Outer counterclockwise (CCW)
+border Outer(t=0, 2*pi) { 
+    x = R2*cos(t); 
+    y = R2*sin(t); 
+    label = 2; 
+} // Outer border (CCW)
+
+border Inner(t=2*pi, 0) { 
+    x = R1*cos(t); 
+    y = R1*sin(t); 
+    label = 1; 
+} // Inner border (CW)
+
+// Step 3: Build the triangular mesh for the annular domain
+mesh Th = buildmesh(Outer(n) + Inner(n)); // Automatically hollow due to orientation
+
+// Visualize the generated mesh
+plot(Th, wait=true, cmm="Mesh of the annular domain");
+
+// Step 4: Define the finite element space
+fespace Vh(Th, P1); // P1 elements (linear basis functions)
+Vh u, v; // u is the solution, v is the test function
+
+// Step 5: Define the source term (zero for Laplace equation)
+func f = 0; // Zero right-hand side
+
+// Step 6: Define the variational problem
+problem Poisson(u, v) = 
+    int2d(Th)(dx(u)*dx(v) + dy(u)*dy(v)) // Bilinear form
+  - int2d(Th)(f*v)                      // Linear form (right-hand side)
+  + on(1, 2, u=0);                      // Boundary conditions: u = 0 on both borders
+
+// Step 7: Solve the problem
+Poisson; // Simply call the problem name to solve it
+
+// Step 8: Visualize the solution
+plot(u, value=true, fill=true, wait=true, cmm="Solution u on the annular domain");
+
+// Step 9: Save the mesh and solution as VTK
+savevtk("annular_solution.vtu", Th, u, dataname="u");
